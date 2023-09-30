@@ -10,6 +10,9 @@ let variableWidthFont
 let instructions
 let debugCorner /* output debug text in the bottom left corner of the canvas */
 
+let table /* just for experimenting */
+let tableColumnHeaders
+let tableColumnWidth
 
 function preload() {
     font = loadFont('data/consola.ttf')
@@ -30,6 +33,15 @@ function setup() {
         numpad 1 → freeze sketch</pre>`)
 
     debugCorner = new CanvasDebugCorner(5)
+
+    table = {
+        "1": [["11", "12", "13", "14", "15"], 10],
+        "2": [["21", "22", "23", "24", "25"], 20],
+        "3": [["31", "32", "33", "34", "35"], 30],
+        "4": [["41", "42", "43", "44", "45"], 40],
+    }
+    tableColumnHeaders = ["1", "2", "3", "4", "5"]
+    tableColumnWidth = 30
 }
 
 
