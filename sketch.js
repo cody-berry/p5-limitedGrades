@@ -12,13 +12,19 @@ let debugCorner /* output debug text in the bottom left corner of the canvas */
 
 let table /* just for experimenting */
 let tableColumnHeaders
-let columnHeadersHeight
+let tableColumnHeadersHeight
 let tableColumnWidth
 
 function preload() {
     font = loadFont('data/consola.ttf')
     fixedWidthFont = loadFont('data/consola.ttf')
     variableWidthFont = loadFont('data/meiryo.ttf')
+    tableColumnHeaders = [
+        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1158465688470552636/image.png?ex=651c58bf&is=651b073f&hm=00ce739fccd48d29282d6493e4014ce10da015a7c2a90407ebb1b41f2dd0c5a3&"),
+        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1158466103736021032/image.png?ex=651c5922&is=651b07a2&hm=09623b9675960c555a0cd25f30c2b64949237c06c488aaeab53a7956c59686fa&"),
+        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1158466232551481404/image.png?ex=651c5941&is=651b07c1&hm=f595e38a7b4e910ffbb32806b78b80d7d58eef875ead8a252026cbbf7b4c3272&"),
+        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1158466844655620217/image.png?ex=651c59d3&is=651b0853&hm=55806ec55abb28c05c4540b81f909023e4054f8af86eba8d263cb74dad21ab37&"),
+    ]
 }
 
 
@@ -36,13 +42,12 @@ function setup() {
     debugCorner = new CanvasDebugCorner(5)
 
     table = {
-        "1": [["1A", "1B", "1C", "1D", "1E", "1F"], 100],
-        "2": [["2A", "2B", "2C", "2D", "2E", "2F"], 100],
-        "3": [["3A", "3B", "3C", "3D", "3E", "3F"], 100],
-        "4": [["4A", "4B", "4C", "4D", "4E", "4F"], 100],
+        "1": [["Cell", "Cell", "Cell", "Cell"], 100],
+        "2": [["Cell", "Cell", "Cell", "Cell"], 100],
+        "3": [["Cell", "Cell", "Cell", "Cell"], 100],
+        "4": [["Cell", "Cell", "Cell", "Cell"], 100],
     }
-    tableColumnHeaders = [" A", " B", " C", " D", " E", " F"]
-    tableColumnHeadersHeight = height - 60
+    tableColumnHeadersHeight = height
     for (let key in table) {
         tableColumnHeadersHeight -= table[key][1]
     }
@@ -58,38 +63,40 @@ function draw() {
     rect(2, 2, tableColumnWidth - 2, tableColumnHeadersHeight - 2)
     textAlign(CENTER, CENTER)
     fill(0, 0, 100)
+    textSize(10)
     text("HEADERS", tableColumnWidth/2, tableColumnHeadersHeight/2)
+    textSize(14)
     fill(0, 0, 0)
 
     let row = 1
 
     rectMode(CORNER)
+    imageMode(CENTER)
 
     for (let columnHeader of tableColumnHeaders) {
         rect(2 + row*tableColumnWidth, 2, tableColumnWidth - 4, tableColumnHeadersHeight - 4)
-        fill(0, 0, 100)
-        if (tableColumnHeadersHeight < 28) {
-            textSize(tableColumnHeadersHeight/2)
-        }
-        text(columnHeader, row*tableColumnWidth + tableColumnWidth/2, tableColumnHeadersHeight/2)
-        textSize(14)
-        fill(0, 0, 0)
+        image(columnHeader, (row + 1/2)*tableColumnWidth, tableColumnHeadersHeight/2, tableColumnHeadersHeight/2, tableColumnHeadersHeight/2)
         row += 1
     }
     let posY = tableColumnHeadersHeight
     for (let rowHeader in table) {
         rect(2, 2 + posY, tableColumnWidth - 4, table[rowHeader][1] - 4)
         fill(0, 0, 100)
-        if (table[rowHeader][1] < 28) {
-            textSize(table[rowHeader][1]/2)
+        if (table[rowHeader][1] < 28 || textWidth(rowHeader) - 4 > tableColumnWidth/2) {
+            textSize(min(table[rowHeader][1]/2, 7*tableColumnWidth/(textWidth(rowHeader) + 4)))
         }
         text(rowHeader, tableColumnWidth/2, posY + table[rowHeader][1]/2)
+        textSize(14)
         fill(234, 10, 37)
         row = 1
         for (let element of table[rowHeader][0]) {
             rect(2 + row*tableColumnWidth, 2 + posY, tableColumnWidth - 4, table[rowHeader][1] - 4)
             fill(0, 0, 100)
+            if (table[rowHeader][1] < 28 || textWidth(element) - 4 > tableColumnWidth/2) {
+                textSize(min(table[rowHeader][1]/2, 7*tableColumnWidth/(textWidth(element) + 4)))
+            }
             text(element, row*tableColumnWidth + tableColumnWidth/2, posY + table[rowHeader][1]/2)
+            textSize(14)
             fill(234, 10, 37)
             row += 1
         }
@@ -128,7 +135,7 @@ function keyPressed() {
 /** 🧹 shows debugging info using text() 🧹 */
 class CanvasDebugCorner {
     constructor(lines) {
-        this.visible = true
+        this.visible = false
         this.size = lines
         this.debugMsgList = [] /* initialize all elements to empty string */
         for (let i in lines)
