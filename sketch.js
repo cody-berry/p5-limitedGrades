@@ -20,10 +20,13 @@ function preload() {
     fixedWidthFont = loadFont('data/consola.ttf')
     variableWidthFont = loadFont('data/meiryo.ttf')
     tableColumnHeaders = [
-        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1158465688470552636/image.png?ex=651c58bf&is=651b073f&hm=00ce739fccd48d29282d6493e4014ce10da015a7c2a90407ebb1b41f2dd0c5a3&"),
-        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1158466103736021032/image.png?ex=651c5922&is=651b07a2&hm=09623b9675960c555a0cd25f30c2b64949237c06c488aaeab53a7956c59686fa&"),
-        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1158466232551481404/image.png?ex=651c5941&is=651b07c1&hm=f595e38a7b4e910ffbb32806b78b80d7d58eef875ead8a252026cbbf7b4c3272&"),
-        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1158466844655620217/image.png?ex=651c59d3&is=651b0853&hm=55806ec55abb28c05c4540b81f909023e4054f8af86eba8d263cb74dad21ab37&"),
+        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159112758273523793/image.png?ex=651eb360&is=651d61e0&hm=831a23d41e7452e0630274aaed65093869b9256cc4b033da31e23e2acdbe075d&"),
+        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159112877949603840/image.png?ex=651eb37d&is=651d61fd&hm=4d18565da1053670066ce18a7ec4c23a6f3432ba9cc995b0df21373c0189ffba&"),
+        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159112935692574770/image.png?ex=651eb38b&is=651d620b&hm=579de7da0e1b9fbeb05f5afbd1a91ecb1221a1f3e0efd27c5648cd7006cd0d30&"),
+        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159112961781157888/image.png?ex=651eb391&is=651d6211&hm=4a6bc55ac68b3c7022a10f906f75898c7958bca646104c0c59243460b80c9070&"),
+        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159112990205935697/image.png?ex=651eb398&is=651d6218&hm=3db33cb8c9ed7541f2fb6d995f1c3b6a1bb95ccb75f062ad298e079d0657bcc4&"),
+        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159113064193462293/image.png?ex=651eb3a9&is=651d6229&hm=9be9257233b621639107550717f7387a72965679c5853577398e04cfeb98eb2f&"),
+        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159113092282724432/image.png?ex=651eb3b0&is=651d6230&hm=bc388c75d916ed1aacc60f4951fcab0a2359e762d9db0d2a6be7a2150da1032f&"),
     ]
 }
 
@@ -42,10 +45,10 @@ function setup() {
     debugCorner = new CanvasDebugCorner(5)
 
     table = {
-        "1": [["Cell", "Cell", "Cell", "Cell"], 100],
-        "2": [["Cell", "Cell", "Cell", "Cell"], 100],
-        "3": [["Cell", "Cell", "Cell", "Cell"], 100],
-        "4": [["Cell", "Cell", "Cell", "Cell"], 100],
+        "A+": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 100],
+        "A ": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 100],
+        "A-": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 100],
+        "B+": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 100],
     }
     tableColumnHeadersHeight = height
     for (let key in table) {
@@ -75,7 +78,7 @@ function draw() {
 
     for (let columnHeader of tableColumnHeaders) {
         rect(2 + row*tableColumnWidth, 2, tableColumnWidth - 4, tableColumnHeadersHeight - 4)
-        image(columnHeader, (row + 1/2)*tableColumnWidth, tableColumnHeadersHeight/2, tableColumnHeadersHeight/2, tableColumnHeadersHeight/2)
+        image(columnHeader, (row + 1/2)*tableColumnWidth, tableColumnHeadersHeight/2)
         row += 1
     }
     let posY = tableColumnHeadersHeight
