@@ -1,6 +1,6 @@
 /**
- *  @author 
- *  @date 2023.
+ *  @author Cody
+ *  @date 2023.09.30
  *
  */
 
@@ -14,16 +14,17 @@ let table /* just for experimenting */
 let tableColumnHeaders
 let tableColumnHeadersHeight
 let tableColumnWidth
+let tableColumnHeadersWidth
 
 function calculateGrade(zScore) {
 
-    result = "  "  // use this as extra spacing
+    let result = "  "  // use this as extra spacing
 
     // Special: SS
     if (zScore > 3.5)
         result = "SS"
     // S range
-    if (zScore > (3.5 - 1 / 3))
+    else if (zScore > (3.5 - 1 / 3))
         result = "S+"
     else if (zScore > (2.5 + 1 / 3))
         result = "S "
@@ -84,7 +85,7 @@ function preload() {
 
 
 function setup() {
-    let cnv = createCanvas(500, 500)
+    let cnv = createCanvas(1500, 5000)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
@@ -96,61 +97,86 @@ function setup() {
 
     debugCorner = new CanvasDebugCorner(5)
 
+    // table in structure of:
+    // {
+    // ["rowHeader", color]:
+    // [[...cells], row height, [row header colors]],
+    // ...
+    // }
+
     table = {
-        "A+": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 115],
-        "A ": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 115],
-        "A-": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 115],
-        "B+": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 115],
+        "SS": [["", "", "", "", "", "", ""], 14, [(17/17)*190, 75, 80]],
+        "S+": [["", "", "", "", "", "", ""], 14, [(16/17)*190, 75, 80]],
+        "S ": [["", "", "", "", "", "", ""], 14, [(15/17)*190, 75, 80]],
+        "S-": [["", "", "", "", "", "", ""], 14, [(14/17)*190, 75, 80]],
+        "A+": [["", "", "", "", "", "", ""], 14, [(13/17)*190, 75, 80]],
+        "A ": [["", "", "", "", "", "", ""], 14, [(12/17)*190, 75, 80]],
+        "A-": [["", "", "", "", "", "", ""], 14, [(11/17)*190, 75, 80]],
+        "B+": [["", "", "", "", "", "", ""], 14, [(10/17)*190, 75, 80]],
+        "B ": [["", "", "", "", "", "", ""], 14, [(9/17)*190, 75, 80]],
+        "B-": [["", "", "", "", "", "", ""], 14, [(8/17)*190, 75, 80]],
+        "C+": [["", "", "", "", "", "", ""], 14, [(7/17)*190, 75, 80]],
+        "C ": [["", "", "", "", "", "", ""], 14, [(6/17)*190, 65, 80]],
+        "C-": [["", "", "", "", "", "", ""], 14, [(5/17)*190, 65, 80]],
+        "D+": [["", "", "", "", "", "", ""], 14, [(4/17)*190, 50, 80]],
+        "D ": [["", "", "", "", "", "", ""], 14, [(3/17)*190, 50, 80]],
+        "D-": [["", "", "", "", "", "", ""], 14, [(2/17)*190, 50, 80]],
+        "E ": [["", "", "", "", "", "", ""], 14, [(1/17)*190, 50, 80]],
+        "F ": [["", "", "", "", "", "", ""], 14, [(0/17)*190, 50, 80]],
     }
     tableColumnHeadersHeight = 40
-    tableColumnWidth = height/(tableColumnHeaders.length + 1)
+    tableColumnHeadersWidth = 40
+    tableColumnWidth = (width-tableColumnHeadersWidth)/(tableColumnHeaders.length)
 }
 
 
 function draw() {
     background(234, 34, 24)
 
+    // display top-left cell
+    // black rectangle with "HEADERS" on it
     fill(0, 0, 0)
     noStroke()
-    rect(2, 2, tableColumnWidth - 2, tableColumnHeadersHeight - 2)
+    rect(2, 2, tableColumnHeadersWidth - 2, tableColumnHeadersHeight - 2)
     textAlign(CENTER, CENTER)
     fill(0, 0, 100)
     textSize(10)
-    text("HEADERS", tableColumnWidth/2, tableColumnHeadersHeight/2)
+    text("HEADERS", tableColumnHeadersWidth/2, tableColumnHeadersHeight/2)
     textSize(14)
     fill(0, 0, 0)
 
-    let row = 1
+    let posX = tableColumnHeadersWidth
 
     rectMode(CORNER)
     imageMode(CENTER)
 
+    // display column header images
     for (let columnHeader of tableColumnHeaders) {
-        rect(2 + row*tableColumnWidth, 2, tableColumnWidth - 4, tableColumnHeadersHeight - 4)
-        image(columnHeader, (row + 1/2)*tableColumnWidth, tableColumnHeadersHeight/2)
-        row += 1
+        rect(2 + posX, 2, tableColumnWidth - 4, tableColumnHeadersHeight - 4)
+        image(columnHeader, posX + tableColumnWidth/2, tableColumnHeadersHeight/2)
+        posX += tableColumnWidth
     }
+
+    // display row headers and elements
     let posY = tableColumnHeadersHeight
     for (let rowHeader in table) {
+        // displaying row header with centered text
         rect(2, 2 + posY, tableColumnWidth - 4, table[rowHeader][1] - 4)
-        fill(0, 0, 100)
-        if (table[rowHeader][1] < 28 || textWidth(rowHeader) - 4 > tableColumnWidth/2) {
-            textSize(min(table[rowHeader][1]/2, 7*tableColumnWidth/(textWidth(rowHeader) + 4)))
-        }
-        text(rowHeader, tableColumnWidth/2, posY + table[rowHeader][1]/2)
+        fill(table[rowHeader][2][0], table[rowHeader][2][1], table[rowHeader][2][2])
+        textAlign(CENTER, CENTER)
+        text(rowHeader, tableColumnHeadersWidth/2, posY + table[rowHeader][1]/2)
+        // switch to corner text
+        textAlign(LEFT, TOP)
         textSize(14)
         fill(234, 10, 37)
-        row = 1
+        posX = tableColumnHeadersWidth
         for (let element of table[rowHeader][0]) {
-            rect(2 + row*tableColumnWidth, 2 + posY, tableColumnWidth - 4, table[rowHeader][1] - 4)
+            rect(2 + posX, 2 + posY, tableColumnWidth - 4, table[rowHeader][1] - 4)
             fill(0, 0, 100)
-            if (table[rowHeader][1] < 28 || textWidth(element) - 4 > tableColumnWidth/2) {
-                textSize(min(table[rowHeader][1]/2, 7*tableColumnWidth/(textWidth(element) + 4)))
-            }
-            text(element, row*tableColumnWidth + tableColumnWidth/2, posY + table[rowHeader][1]/2)
+            text(element, posX, posY)
             textSize(14)
             fill(234, 10, 37)
-            row += 1
+            posX += tableColumnWidth
         }
         textSize(14)
         fill(0, 0, 0)
