@@ -15,6 +15,58 @@ let tableColumnHeaders
 let tableColumnHeadersHeight
 let tableColumnWidth
 
+function calculateGrade(zScore) {
+
+    result = "  "  // use this as extra spacing
+
+    // Special: SS
+    if (zScore > 3.5)
+        result = "SS"
+    // S range
+    if (zScore > (3.5 - 1 / 3))
+        result = "S+"
+    else if (zScore > (2.5 + 1 / 3))
+        result = "S "
+    else if (zScore > 2.5)
+        result = "S-"
+    // A range
+    else if (zScore > (2.5 - 1 / 3))
+        result = "A+"
+    else if (zScore > (1.5 + 1 / 3))
+        result = "A "
+    else if (zScore > 1.5)
+        result = "A-"
+    // B range
+    else if (zScore > (1.5 - 1 / 3))
+        result = "B+"
+    else if (zScore > (0.5 + 1 / 3))
+        result = "B "
+    else if (zScore > 0.5)
+        result = "B-"
+    // C range
+    else if (zScore > (0.5 - 1 / 3))
+        result = "C+"
+    else if (zScore > (-0.5 + 1 / 3))
+        result = "C "
+    else if (zScore > -0.5)
+        result = "C-"
+    // D range
+    else if (zScore > (-0.5 - 1 / 3))
+        result = "D+"
+    else if (zScore > (-1.5 + 1 / 3))
+        result = "D "
+    else if (zScore > -1.5)
+        result = "D-"
+    // E range
+    else if (zScore > -2)
+        result = "E "
+    // F range
+    else
+        result = "F "
+
+    return result
+}
+
 function preload() {
     font = loadFont('data/consola.ttf')
     fixedWidthFont = loadFont('data/consola.ttf')
@@ -45,15 +97,12 @@ function setup() {
     debugCorner = new CanvasDebugCorner(5)
 
     table = {
-        "A+": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 100],
-        "A ": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 100],
-        "A-": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 100],
-        "B+": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 100],
+        "A+": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 115],
+        "A ": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 115],
+        "A-": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 115],
+        "B+": [["Cell", "Cell", "Cell", "Cell", "Cell", "Cell", "Cell"], 115],
     }
-    tableColumnHeadersHeight = height
-    for (let key in table) {
-        tableColumnHeadersHeight -= table[key][1]
-    }
+    tableColumnHeadersHeight = 40
     tableColumnWidth = height/(tableColumnHeaders.length + 1)
 }
 
