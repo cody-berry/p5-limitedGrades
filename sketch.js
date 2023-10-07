@@ -20,13 +20,8 @@ let data
 function calculateGrade(zScore) {
     let result = "F-"  // use this as extra spacing
 
-    // Special: SS
-    if (zScore > 3.5)
-        result = "SS"
     // S range
-    else if (zScore > (3.5 - 1 / 3))
-        result = "S+"
-    else if (zScore > (2.5 + 1 / 3))
+    if (zScore > (2.5 + 2 / 3))
         result = "S "
     else if (zScore > 2.5)
         result = "S-"
@@ -73,14 +68,12 @@ function preload() {
     fixedWidthFont = loadFont('data/consola.ttf')
     variableWidthFont = loadFont('data/meiryo.ttf')
     table = {
-        "SS": [["", "", "", "", "", "", ""], 14, [(17/17)*190, 75, 80]],
-        "S+": [["", "", "", "", "", "", ""], 14, [(16/17)*190, 75, 80]],
-        "S ": [["", "", "", "", "", "", ""], 14, [(15/17)*190, 75, 80]],
-        "S-": [["", "", "", "", "", "", ""], 14, [(14/17)*190, 75, 80]],
-        "A+": [["", "", "", "", "", "", ""], 14, [(13/17)*190, 75, 80]],
-        "A ": [["", "", "", "", "", "", ""], 14, [(12/17)*190, 75, 80]],
-        "A-": [["", "", "", "", "", "", ""], 14, [(11/17)*190, 75, 80]],
-        "B+": [["", "", "", "", "", "", ""], 14, [(10/17)*190, 75, 80]],
+        "S ": [["", "", "", "", "", "", ""], 14, [(17/17)*190, 75, 80]],
+        "S-": [["", "", "", "", "", "", ""], 14, [(16/17)*190, 75, 80]],
+        "A+": [["", "", "", "", "", "", ""], 14, [(15/17)*190, 75, 80]],
+        "A ": [["", "", "", "", "", "", ""], 14, [(14/17)*190, 75, 80]],
+        "A-": [["", "", "", "", "", "", ""], 14, [(13/17)*190, 75, 80]],
+        "B+": [["", "", "", "", "", "", ""], 14, [(11/17)*190, 75, 80]],
         "B ": [["", "", "", "", "", "", ""], 14, [(9/17)*190, 75, 80]],
         "B-": [["", "", "", "", "", "", ""], 14, [(8/17)*190, 75, 80]],
         "C+": [["", "", "", "", "", "", ""], 14, [(7/17)*190, 75, 80]],
@@ -91,7 +84,6 @@ function preload() {
         "D-": [["", "", "", "", "", "", ""], 14, [(2/17)*190, 50, 80]],
         "E ": [["", "", "", "", "", "", ""], 14, [(1/17)*190, 50, 80]],
         "F ": [["", "", "", "", "", "", ""], 14, [(0/17)*190, 50, 80]],
-        "F-": [["", "", "", "", "", "", ""], 14, [(-1/17)*190, 50, 80]]
     }
     tableColumnHeadersHeight = 40
     tableColumnHeadersWidth = 40
@@ -104,7 +96,7 @@ function preload() {
         loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159113064193462293/image.png?ex=651eb3a9&is=651d6229&hm=9be9257233b621639107550717f7387a72965679c5853577398e04cfeb98eb2f&"),
         loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159113092282724432/image.png?ex=651eb3b0&is=651d6230&hm=bc388c75d916ed1aacc60f4951fcab0a2359e762d9db0d2a6be7a2150da1032f&"),
     ]
-    tableColumnWidth = (1200-tableColumnHeadersWidth)/(tableColumnHeaders.length)
+    tableColumnWidth = (2000-tableColumnHeadersWidth)/(tableColumnHeaders.length)
     data = loadJSON("json/all.json", loadedPlayerData)
 }
 
@@ -112,19 +104,52 @@ function loadedPlayerData(data) {
     print(Object.keys(data["cardData"]))
     cardNames = Object.keys(data["cardData"])
     for (let cardName of cardNames) {
-        // special WOT handling
-        if (cardName === "Blind Obedience") {
-            break
+        // special no-data handling
+        if (data["cardData"][cardName]["zScoreGIH"]) {
+            // print data for card
+            print(cardName)
+            print(calculateGrade(data["cardData"][cardName]["zScoreGIH"]))
+            print(data["cardData"][cardName]["zScoreGIH"])
+
+            // figure out which part of the table to put it in
+            let grade = calculateGrade(data["cardData"][cardName]["zScoreGIH"])
+            let tableIndex = 6 // assume that it's colorlessd
+            let color = data["cardData"][cardName]["Color"]
+            if (color === "W")
+                tableIndex = 0
+            if (color === "U")
+                tableIndex = 1
+            if (color === "B")
+                tableIndex = 2
+            if (color === "R")
+                tableIndex = 3
+            if (color === "G")
+                tableIndex = 4
+            if (color.length > 1) // multicolor
+                tableIndex = 5
+            print(tableIndex)
+            print(color)
+
+            table[grade][0][tableIndex] += `\n${cardName}`
+            if (table[grade][0][tableIndex][0] === "\n") {
+                table[grade][0][tableIndex] = table[grade][0][tableIndex].substring(1)
+            }
+
+            // find number of newline characters to figure out how large
+            // the block should be
+            let numNewlines = table[grade][0][tableIndex].split("\n").length - 1
+            table[grade][1] = max(table[grade][1], numNewlines*(17.5) + 18)
+
+            print("")
+        } else {
+            print(`No data for ${cardName}`)
+            print("")
         }
-        print(cardName)
-        print(calculateGrade(data["cardData"][cardName]["zScoreGIH"]))
-        print(data["cardData"][cardName]["zScoreGIH"])
-        print("")
     }
 }
 
 function setup() {
-    let cnv = createCanvas(1200, 5000)
+    let cnv = createCanvas(2000, 1310)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
@@ -183,7 +208,7 @@ function draw() {
         for (let element of table[rowHeader][0]) {
             rect(2 + posX, 2 + posY, tableColumnWidth - 4, table[rowHeader][1] - 4)
             fill(0, 0, 100)
-            text(element, posX, posY)
+            text(element, 3 + posX, 3 + posY)
             textSize(14)
             fill(234, 10, 37)
             posX += tableColumnWidth
