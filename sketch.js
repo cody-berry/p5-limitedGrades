@@ -113,7 +113,7 @@ function loadedPlayerData(data) {
 
             // figure out which part of the table to put it in
             let grade = calculateGrade(data["cardData"][cardName]["zScoreGIH"])
-            let tableIndex = 6 // assume that it's colorlessd
+            let tableIndex = 6 // assume that it's colorless
             let color = data["cardData"][cardName]["Color"]
             if (color === "W")
                 tableIndex = 0
@@ -149,7 +149,7 @@ function loadedPlayerData(data) {
 }
 
 function setup() {
-    let cnv = createCanvas(2000, 1310)
+    let cnv = createCanvas(2000, 1320)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
@@ -161,7 +161,10 @@ function setup() {
 
     debugCorner = new CanvasDebugCorner(5)
 
-
+    testMiniCardMythic = new MiniCard("This is a test mythic card", "mythic", 1443, 1100, 273, 16)
+    testMiniCardRare = new MiniCard("This is a test rare card", "rare", 1443, 1120, 273, 16)
+    testMiniCardUncommon = new MiniCard("This is a test uncommon card", "uncommon", 1443, 1140, 273, 16)
+    testMiniCardCommon = new MiniCard("This is a test common card", "common", 1443, 1160, 273, 16)
 }
 
 
@@ -217,6 +220,11 @@ function draw() {
         fill(0, 0, 0)
         posY += table[rowHeader][1]
     }
+
+    testMiniCardMythic.display()
+    testMiniCardRare.display()
+    testMiniCardUncommon.display()
+    testMiniCardCommon.display()
 
     textAlign(LEFT)
 
