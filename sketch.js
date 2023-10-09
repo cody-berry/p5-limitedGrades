@@ -155,7 +155,7 @@ function loadedPlayerData(data) {
             )
 
             // figure out how large the block should be
-            groupData[grade][1] = max(groupData[grade][1], groupData[grade][0][tableIndex].length*(20) + 20)
+            groupData[grade][1] = max(groupData[grade][1], groupData[grade][0][tableIndex].length*(20) + 4)
             table[grade][1] = groupData[grade][1]
 
             print("")
@@ -178,7 +178,7 @@ function loadedPlayerData(data) {
         let colorGroupedCards = groupData[grade][0]
 
         for (let cardsInColor of colorGroupedCards) {
-            let posY = posYAtStartOfGrade + 3
+            let posY = posYAtStartOfGrade + 2
             for (let card of cardsInColor) {
                 miniCardIcons.push(
                     new MiniCard(card[0], card[1], posX + 2, posY + 2, tableColumnWidth - 4, 16)
@@ -195,7 +195,7 @@ function loadedPlayerData(data) {
 }
 
 function setup() {
-    let cnv = createCanvas(2000, 1802)
+    let cnv = createCanvas(2000, 1546)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
@@ -216,7 +216,7 @@ function draw() {
     // black rectangle with "HEADERS" on it
     fill(0, 0, 0)
     noStroke()
-    rect(2, 2, tableColumnHeadersWidth - 2, tableColumnHeadersHeight - 2)
+    rect(1, 2, tableColumnHeadersWidth - 2, tableColumnHeadersHeight - 4)
     textAlign(CENTER, CENTER)
     fill(0, 0, 100)
     textSize(10)
@@ -231,7 +231,7 @@ function draw() {
 
     // display column header images
     for (let columnHeader of tableColumnHeaders) {
-        rect(2 + posX, 2, tableColumnWidth - 4, tableColumnHeadersHeight - 4)
+        rect(1 + posX, 2, tableColumnWidth - 2, tableColumnHeadersHeight - 4)
         image(columnHeader, posX + tableColumnWidth/2, tableColumnHeadersHeight/2)
         posX += tableColumnWidth
     }
@@ -240,7 +240,7 @@ function draw() {
     let posY = tableColumnHeadersHeight
     for (let rowHeader in table) {
         // displaying row header with centered text
-        rect(2, 2 + posY, tableColumnWidth - 4, table[rowHeader][1] - 4)
+        rect(1, 2 + posY, tableColumnHeadersWidth - 2, table[rowHeader][1] - 4)
         fill(table[rowHeader][2][0], table[rowHeader][2][1], table[rowHeader][2][2])
         textAlign(CENTER, CENTER)
         text(rowHeader, tableColumnHeadersWidth/2, posY + table[rowHeader][1]/2)
@@ -250,7 +250,7 @@ function draw() {
         fill(234, 10, 17)
         posX = tableColumnHeadersWidth
         for (let element of table[rowHeader][0]) {
-            rect(2 + posX, 2 + posY, tableColumnWidth - 4, table[rowHeader][1] - 4)
+            rect(1 + posX, 2 + posY, tableColumnWidth - 2, table[rowHeader][1] - 4)
             fill(0, 0, 100)
             text(element, 3 + posX, 3 + posY)
             textSize(14)
