@@ -9,8 +9,8 @@ class MiniCard {
         let rarityColors = {
             "mythic": [10, 75, 80],
             "rare": [57, 75, 55],
-            "uncommon": [0, 0, 80],
-            "common": [0, 0, 20]
+            "uncommon": [0, 0, 70],
+            "common": [0, 0, 50]
         }
         this.iconColor = rarityColors[this.cardRarity]
         print(this.cardName)

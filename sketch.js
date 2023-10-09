@@ -16,6 +16,7 @@ let tableColumnHeadersHeight
 let tableColumnWidth
 let tableColumnHeadersWidth
 let data
+let miniCardIcons
 
 function calculateGrade(zScore) {
     let result = "F-"  // use this as extra spacing
@@ -102,7 +103,26 @@ function preload() {
 
 function loadedPlayerData(data) {
     print(Object.keys(data["cardData"]))
-    cardNames = Object.keys(data["cardData"])
+
+    let groupData = {
+        "S ": [[[], [], [], [], [], [], []], 14],
+        "S-": [[[], [], [], [], [], [], []], 14],
+        "A+": [[[], [], [], [], [], [], []], 14],
+        "A ": [[[], [], [], [], [], [], []], 14],
+        "A-": [[[], [], [], [], [], [], []], 14],
+        "B+": [[[], [], [], [], [], [], []], 14],
+        "B ": [[[], [], [], [], [], [], []], 14],
+        "B-": [[[], [], [], [], [], [], []], 14],
+        "C+": [[[], [], [], [], [], [], []], 14],
+        "C ": [[[], [], [], [], [], [], []], 14],
+        "C-": [[[], [], [], [], [], [], []], 14],
+        "D+": [[[], [], [], [], [], [], []], 14],
+        "D ": [[[], [], [], [], [], [], []], 14],
+        "D-": [[[], [], [], [], [], [], []], 14],
+        "E ": [[[], [], [], [], [], [], []], 14],
+        "F ": [[[], [], [], [], [], [], []], 14],
+    }
+    let cardNames = Object.keys(data["cardData"])
     for (let cardName of cardNames) {
         // special no-data handling
         if (data["cardData"][cardName]["zScoreGIH"]) {
@@ -130,15 +150,13 @@ function loadedPlayerData(data) {
             print(tableIndex)
             print(color)
 
-            table[grade][0][tableIndex] += `\n${cardName}`
-            if (table[grade][0][tableIndex][0] === "\n") {
-                table[grade][0][tableIndex] = table[grade][0][tableIndex].substring(1)
-            }
+            groupData[grade][0][tableIndex].push(
+                [cardName, data["cardData"][cardName]["Rarity"]]
+            )
 
-            // find number of newline characters to figure out how large
-            // the block should be
-            let numNewlines = table[grade][0][tableIndex].split("\n").length - 1
-            table[grade][1] = max(table[grade][1], numNewlines*(17.5) + 18)
+            // figure out how large the block should be
+            groupData[grade][1] = max(groupData[grade][1], groupData[grade][0][tableIndex].length*(20) + 20)
+            table[grade][1] = groupData[grade][1]
 
             print("")
         } else {
@@ -146,10 +164,38 @@ function loadedPlayerData(data) {
             print("")
         }
     }
+
+    print(groupData)
+
+    miniCardIcons = []
+
+    // make the mini card icon list
+    let posYAtStartOfGrade = tableColumnHeadersHeight
+    for (let grade in groupData) {
+        let gradeData = groupData[grade]
+        let posX = tableColumnHeadersWidth
+        let height = groupData[grade][1]
+        let colorGroupedCards = groupData[grade][0]
+
+        for (let cardsInColor of colorGroupedCards) {
+            let posY = posYAtStartOfGrade + 3
+            for (let card of cardsInColor) {
+                miniCardIcons.push(
+                    new MiniCard(card[0], card[1], posX + 2, posY + 2, tableColumnWidth - 4, 16)
+                )
+
+                posY += 20
+            }
+
+            posX += tableColumnWidth
+        }
+
+        posYAtStartOfGrade += height
+    }
 }
 
 function setup() {
-    let cnv = createCanvas(2000, 1320)
+    let cnv = createCanvas(2000, 1802)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
@@ -160,16 +206,11 @@ function setup() {
         numpad 1 → freeze sketch</pre>`)
 
     debugCorner = new CanvasDebugCorner(5)
-
-    testMiniCardMythic = new MiniCard("This is a test mythic card", "mythic", 1443, 1100, 273, 16)
-    testMiniCardRare = new MiniCard("This is a test rare card", "rare", 1443, 1120, 273, 16)
-    testMiniCardUncommon = new MiniCard("This is a test uncommon card", "uncommon", 1443, 1140, 273, 16)
-    testMiniCardCommon = new MiniCard("This is a test common card", "common", 1443, 1160, 273, 16)
 }
 
 
 function draw() {
-    background(234, 34, 24)
+    background(0, 0, 30)
 
     // display top-left cell
     // black rectangle with "HEADERS" on it
@@ -206,27 +247,26 @@ function draw() {
         // switch to corner text
         textAlign(LEFT, TOP)
         textSize(14)
-        fill(234, 10, 37)
+        fill(234, 10, 17)
         posX = tableColumnHeadersWidth
         for (let element of table[rowHeader][0]) {
             rect(2 + posX, 2 + posY, tableColumnWidth - 4, table[rowHeader][1] - 4)
             fill(0, 0, 100)
             text(element, 3 + posX, 3 + posY)
             textSize(14)
-            fill(234, 10, 37)
+            fill(0, 0, 17)
             posX += tableColumnWidth
         }
         textSize(14)
         fill(0, 0, 0)
         posY += table[rowHeader][1]
     }
-
-    testMiniCardMythic.display()
-    testMiniCardRare.display()
-    testMiniCardUncommon.display()
-    testMiniCardCommon.display()
-
     textAlign(LEFT)
+
+    // display all the mini card icons
+    for (let miniIcon of miniCardIcons) {
+        miniIcon.display()
+    }
 
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
