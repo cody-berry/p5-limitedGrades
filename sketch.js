@@ -194,8 +194,16 @@ function loadedPlayerData(data) {
     }
 }
 
+function sum(arr) {
+    let total = 0
+    for (let num of arr) {
+        total += num
+    }
+    return total
+}
+
 function setup() {
-    let cnv = createCanvas(2000, 1546)
+    let cnv = createCanvas(2000, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
@@ -241,7 +249,12 @@ function draw() {
     for (let rowHeader in table) {
         // displaying row header with centered text
         rect(1, 2 + posY, tableColumnHeadersWidth - 2, table[rowHeader][1] - 4)
-        fill(table[rowHeader][2][0], table[rowHeader][2][1], table[rowHeader][2][2])
+        stroke(table[rowHeader][2][0], table[rowHeader][2][1], table[rowHeader][2][2])
+        strokeWeight(4)
+        line(2, posY, 2, table[rowHeader][1] + posY)
+        noStroke()
+        fill(0, 0, 100)
+        textSize(16)
         textAlign(CENTER, CENTER)
         text(rowHeader, tableColumnHeadersWidth/2, posY + table[rowHeader][1]/2)
         // switch to corner text
