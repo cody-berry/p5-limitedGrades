@@ -69,22 +69,22 @@ function preload() {
     fixedWidthFont = loadFont('data/consola.ttf')
     variableWidthFont = loadFont('data/meiryo.ttf')
     table = {
-        "S ": [["", "", "", "", "", "", ""], 14, [(17/17)*190, 75, 80]],
-        "S-": [["", "", "", "", "", "", ""], 14, [(16/17)*190, 75, 80]],
-        "A+": [["", "", "", "", "", "", ""], 14, [(15/17)*190, 75, 80]],
-        "A ": [["", "", "", "", "", "", ""], 14, [(14/17)*190, 75, 80]],
-        "A-": [["", "", "", "", "", "", ""], 14, [(13/17)*190, 75, 80]],
-        "B+": [["", "", "", "", "", "", ""], 14, [(11/17)*190, 75, 80]],
-        "B ": [["", "", "", "", "", "", ""], 14, [(9/17)*190, 75, 80]],
-        "B-": [["", "", "", "", "", "", ""], 14, [(8/17)*190, 75, 80]],
-        "C+": [["", "", "", "", "", "", ""], 14, [(7/17)*190, 75, 80]],
-        "C ": [["", "", "", "", "", "", ""], 14, [(6/17)*190, 65, 80]],
-        "C-": [["", "", "", "", "", "", ""], 14, [(5/17)*190, 65, 80]],
-        "D+": [["", "", "", "", "", "", ""], 14, [(4/17)*190, 50, 80]],
-        "D ": [["", "", "", "", "", "", ""], 14, [(3/17)*190, 50, 80]],
-        "D-": [["", "", "", "", "", "", ""], 14, [(2/17)*190, 50, 80]],
-        "E ": [["", "", "", "", "", "", ""], 14, [(1/17)*190, 50, 80]],
-        "F ": [["", "", "", "", "", "", ""], 14, [(0/17)*190, 50, 80]],
+        "S ": [["", "", "", "", "", "", ""], 14, [(18/18)*190, 75, 80]],
+        "S-": [["", "", "", "", "", "", ""], 14, [(17/18)*190, 75, 80]],
+        "A+": [["", "", "", "", "", "", ""], 14, [(15.5/18)*190, 75, 80]],
+        "A ": [["", "", "", "", "", "", ""], 14, [(14/18)*190, 75, 80]],
+        "A-": [["", "", "", "", "", "", ""], 14, [(12/18)*190, 75, 80]],
+        "B+": [["", "", "", "", "", "", ""], 14, [(10.5/18)*190, 75, 80]],
+        "B ": [["", "", "", "", "", "", ""], 14, [(9/18)*190, 75, 80]],
+        "B-": [["", "", "", "", "", "", ""], 14, [(8/18)*190, 75, 80]],
+        "C+": [["", "", "", "", "", "", ""], 14, [(7/18)*190, 75, 80]],
+        "C ": [["", "", "", "", "", "", ""], 14, [(6/18)*190, 65, 80]],
+        "C-": [["", "", "", "", "", "", ""], 14, [(5/18)*190, 65, 80]],
+        "D+": [["", "", "", "", "", "", ""], 14, [(4/18)*190, 50, 80]],
+        "D ": [["", "", "", "", "", "", ""], 14, [(3/18)*190, 50, 80]],
+        "D-": [["", "", "", "", "", "", ""], 14, [(2/18)*190, 50, 80]],
+        "E ": [["", "", "", "", "", "", ""], 14, [(1/18)*190, 50, 80]],
+        "F ": [["", "", "", "", "", "", ""], 14, [(0/18)*190, 50, 80]],
     }
     tableColumnHeadersHeight = 40
     tableColumnHeadersWidth = 40
@@ -102,7 +102,7 @@ function preload() {
 }
 
 function loadedPlayerData(data) {
-    print(Object.keys(data["cardData"]))
+    print(data["cardData"])
 
     let groupData = {
         "S ": [[[], [], [], [], [], [], []], 14],
@@ -151,7 +151,7 @@ function loadedPlayerData(data) {
             print(color)
 
             groupData[grade][0][tableIndex].push(
-                [cardName, data["cardData"][cardName]["Rarity"]]
+                [cardName, data["cardData"][cardName]["Rarity"], data["cardData"][cardName]["url"]]
             )
 
             // figure out how large the block should be
@@ -181,7 +181,7 @@ function loadedPlayerData(data) {
             let posY = posYAtStartOfGrade + 2
             for (let card of cardsInColor) {
                 miniCardIcons.push(
-                    new MiniCard(card[0], card[1], posX + 2, posY + 2, tableColumnWidth - 4, 16)
+                    new MiniCard(card[0], card[1], posX + 2, posY + 2, tableColumnWidth - 4, 16, card[2])
                 )
 
                 posY += 20
@@ -260,13 +260,10 @@ function draw() {
         // switch to corner text
         textAlign(LEFT, TOP)
         textSize(14)
-        fill(234, 10, 17)
+        fill(0, 0, 17)
         posX = tableColumnHeadersWidth
         for (let element of table[rowHeader][0]) {
             rect(1 + posX, 2 + posY, tableColumnWidth - 2, table[rowHeader][1] - 4)
-            fill(0, 0, 100)
-            text(element, 3 + posX, 3 + posY)
-            textSize(14)
             fill(0, 0, 17)
             posX += tableColumnWidth
         }
@@ -281,13 +278,17 @@ function draw() {
         miniIcon.display()
     }
 
+    // display all the mini card icons
+    for (let miniIcon of miniCardIcons) {
+        miniIcon.displayHoverImage()
+    }
+
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
     debugCorner.setText(`fps: ${frameRate().toFixed(0)}`, 1)
     debugCorner.showBottom()
 
-    if (frameCount > 3000)
-        noLoop()
+    cursor(CROSS)
 }
 
 
