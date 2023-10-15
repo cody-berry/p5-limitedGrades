@@ -23,6 +23,7 @@ class MiniCard {
     }
 
     display() {
+        textSize(18)
         fill(0, 0, 0, 50)
         rect(this.posX, this.posY, this.iconWidth, this.iconHeight)
         fill(0, 0, 100)
@@ -44,7 +45,8 @@ class MiniCard {
             mouseX < this.posX + this.iconWidth &&
             mouseY > this.posY &&
             mouseY < this.posY + this.iconHeight) {
-            if (this.posY + this.iconHeight + (this.hoverImage.height)*(this.iconWidth/(this.hoverImage.width)) > height)
+            if (this.posY + this.iconHeight + (this.hoverImage.height)*(this.iconWidth/(this.hoverImage.width)) >
+                min(height, windowHeight + window.scrollY))
                 image(this.hoverImage, this.posX, this.posY - 5 - (this.hoverImage.height)*(this.iconWidth/(this.hoverImage.width)), this.iconWidth, (this.hoverImage.height)*(this.iconWidth/(this.hoverImage.width)))
             else
                 image(this.hoverImage, this.posX, this.posY + this.iconHeight + 5, this.iconWidth, (this.hoverImage.height)*(this.iconWidth/(this.hoverImage.width))) // scale height properly

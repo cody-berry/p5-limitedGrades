@@ -17,6 +17,7 @@ let tableColumnWidth
 let tableColumnHeadersWidth
 let data
 let miniCardIcons
+let cnv
 
 function calculateGrade(zScore) {
     let result = "F-"  // use this as extra spacing
@@ -70,14 +71,14 @@ function preload() {
     variableWidthFont = loadFont('data/meiryo.ttf')
     table = {
         "S ": [["", "", "", "", "", "", ""], 14, [(18/18)*190, 75, 80]],
-        "S-": [["", "", "", "", "", "", ""], 14, [(17/18)*190, 75, 80]],
-        "A+": [["", "", "", "", "", "", ""], 14, [(15.5/18)*190, 75, 80]],
-        "A ": [["", "", "", "", "", "", ""], 14, [(14/18)*190, 75, 80]],
-        "A-": [["", "", "", "", "", "", ""], 14, [(12/18)*190, 75, 80]],
-        "B+": [["", "", "", "", "", "", ""], 14, [(10.5/18)*190, 75, 80]],
-        "B ": [["", "", "", "", "", "", ""], 14, [(9/18)*190, 75, 80]],
-        "B-": [["", "", "", "", "", "", ""], 14, [(8/18)*190, 75, 80]],
-        "C+": [["", "", "", "", "", "", ""], 14, [(7/18)*190, 75, 80]],
+        "S-": [["", "", "", "", "", "", ""], 14, [(17/18)*190, 74, 80]],
+        "A+": [["", "", "", "", "", "", ""], 14, [(15.5/18)*190, 73, 80]],
+        "A ": [["", "", "", "", "", "", ""], 14, [(14/18)*190, 72, 80]],
+        "A-": [["", "", "", "", "", "", ""], 14, [(12/18)*190, 71, 80]],
+        "B+": [["", "", "", "", "", "", ""], 14, [(10.5/18)*190, 70, 80]],
+        "B ": [["", "", "", "", "", "", ""], 14, [(9/18)*190, 69, 80]],
+        "B-": [["", "", "", "", "", "", ""], 14, [(8/18)*190, 68, 80]],
+        "C+": [["", "", "", "", "", "", ""], 14, [(7/18)*190, 66.5, 80]],
         "C ": [["", "", "", "", "", "", ""], 14, [(6/18)*190, 65, 80]],
         "C-": [["", "", "", "", "", "", ""], 14, [(5/18)*190, 65, 80]],
         "D+": [["", "", "", "", "", "", ""], 14, [(4/18)*190, 50, 80]],
@@ -98,7 +99,27 @@ function preload() {
         loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159113092282724432/image.png?ex=651eb3b0&is=651d6230&hm=bc388c75d916ed1aacc60f4951fcab0a2359e762d9db0d2a6be7a2150da1032f&"),
     ]
     tableColumnWidth = (2000-tableColumnHeadersWidth)/(tableColumnHeaders.length)
-    data = loadJSON("json/all.json", loadedPlayerData)
+}
+
+function wordWrap(text, targetSize, maxWidth) {
+    textSize(targetSize)
+
+    if (textWidth(text) > maxWidth) {
+        let currentLetters = ""
+        let index = 0
+        for (let letter of text) {
+            currentLetters += letter
+            if (textWidth(currentLetters) > maxWidth) {
+                return (
+                    currentLetters.substring(0, currentLetters.length - 1) +
+                    "\n" + wordWrap(text.substring(index), targetSize, maxWidth)
+                )
+            }
+            index += 1
+        }
+    }
+
+    return text
 }
 
 function loadedPlayerData(data) {
@@ -155,7 +176,7 @@ function loadedPlayerData(data) {
             )
 
             // figure out how large the block should be
-            groupData[grade][1] = max(groupData[grade][1], groupData[grade][0][tableIndex].length*(20) + 4)
+            groupData[grade][1] = max(groupData[grade][1], groupData[grade][0][tableIndex].length*(24) + 4)
             table[grade][1] = groupData[grade][1]
 
             print("")
@@ -164,6 +185,8 @@ function loadedPlayerData(data) {
             print("")
         }
     }
+
+    resizeCanvas(2000, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
 
     print(groupData)
 
@@ -180,11 +203,18 @@ function loadedPlayerData(data) {
         for (let cardsInColor of colorGroupedCards) {
             let posY = posYAtStartOfGrade + 2
             for (let card of cardsInColor) {
+                let cardIconWidth = tableColumnWidth - 4
+                let wrappedCardName = wordWrap(card[0], 18, cardIconWidth)
+                let numNewlines = wrappedCardName.split("\n").length - 1
+                let additionalHeightTaken = numNewlines*22
                 miniCardIcons.push(
-                    new MiniCard(card[0], card[1], posX + 2, posY + 2, tableColumnWidth - 4, 16, card[2])
+                    new MiniCard(wrappedCardName, card[1], posX + 2, posY + 2, tableColumnWidth - 4, 20 + additionalHeightTaken, card[2])
                 )
 
-                posY += 20
+                groupData[grade][1] += additionalHeightTaken
+                table[grade][1] += additionalHeightTaken
+                height += additionalHeightTaken
+                posY += 24 + additionalHeightTaken
             }
 
             posX += tableColumnWidth
@@ -192,6 +222,8 @@ function loadedPlayerData(data) {
 
         posYAtStartOfGrade += height
     }
+
+    resizeCanvas(2000, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
 }
 
 function sum(arr) {
@@ -203,10 +235,13 @@ function sum(arr) {
 }
 
 function setup() {
-    let cnv = createCanvas(2000, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
+    cnv = createCanvas(2000, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
+    data = loadJSON("json/all.json", loadedPlayerData)
+
+    miniCardIcons = []
 
     /* initialize instruction div */
     instructions = select('#ins')
@@ -287,8 +322,6 @@ function draw() {
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
     debugCorner.setText(`fps: ${frameRate().toFixed(0)}`, 1)
     debugCorner.showBottom()
-
-    cursor(CROSS)
 }
 
 
