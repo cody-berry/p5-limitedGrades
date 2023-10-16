@@ -105,17 +105,20 @@ function wordWrap(text, targetSize, maxWidth) {
     textSize(targetSize)
 
     if (textWidth(text) > maxWidth) {
-        let currentLetters = ""
-        let index = 0
-        for (let letter of text) {
-            currentLetters += letter
-            if (textWidth(currentLetters) > maxWidth) {
+        let words = text.split(" ")
+        let currentWords = ""
+        let currentIndex = 0
+        let remainingWords = words
+        for (let word of words) {
+            currentWords += word
+            if (textWidth(currentWords) > maxWidth) {
                 return (
-                    currentLetters.substring(0, currentLetters.length - 1) +
-                    "\n" + wordWrap(text.substring(index), targetSize, maxWidth)
+                    text.substring(0, currentIndex - 1) + "\n" +
+                    wordWrap(text.substring(currentIndex))
                 )
             }
-            index += 1
+            currentWords += " "
+            currentIndex += word.length + 1
         }
     }
 
@@ -203,7 +206,7 @@ function loadedPlayerData(data) {
         for (let cardsInColor of colorGroupedCards) {
             let posY = posYAtStartOfGrade + 2
             for (let card of cardsInColor) {
-                let cardIconWidth = tableColumnWidth - 4
+                let cardIconWidth = tableColumnWidth - 14
                 let wrappedCardName = wordWrap(card[0], 18, cardIconWidth)
                 let numNewlines = wrappedCardName.split("\n").length - 1
                 let additionalHeightTaken = numNewlines*22

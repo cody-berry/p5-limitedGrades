@@ -32,7 +32,12 @@ class MiniCard {
             mouseY > this.posY &&
             mouseY < this.posY + this.iconHeight) {
             fill(35, 100, 100)
-            rect(this.posX + 10, this.posY + textAscent() + textDescent()/2, textWidth(this.cardName), textDescent()/4)
+            let lines = this.cardName.split("\n")
+            let posY = this.posY + textAscent() + textDescent()/2
+            for (let line of lines) {
+                rect(this.posX + 10, posY, textWidth(line), textDescent() / 4)
+                posY += 22
+            }
         }
         text(this.cardName, this.posX + 10, this.posY + 1)
         fill(this.iconColor[0], this.iconColor[1], this.iconColor[2])
