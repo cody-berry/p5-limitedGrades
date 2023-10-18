@@ -18,6 +18,7 @@ let tableColumnHeadersWidth
 let data
 let miniCardIcons
 let cnv
+let popupScreen = false
 
 function calculateGrade(zScore) {
     let result = "F-"  // use this as extra spacing
@@ -66,7 +67,7 @@ function calculateGrade(zScore) {
 }
 
 function preload() {
-    font = loadFont('data/consola.ttf')
+    font = loadFont('data/meiryo.ttf')
     fixedWidthFont = loadFont('data/consola.ttf')
     variableWidthFont = loadFont('data/meiryo.ttf')
     table = {
@@ -98,7 +99,7 @@ function preload() {
         loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159113064193462293/image.png?ex=651eb3a9&is=651d6229&hm=9be9257233b621639107550717f7387a72965679c5853577398e04cfeb98eb2f&"),
         loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159113092282724432/image.png?ex=651eb3b0&is=651d6230&hm=bc388c75d916ed1aacc60f4951fcab0a2359e762d9db0d2a6be7a2150da1032f&"),
     ]
-    tableColumnWidth = (2000-tableColumnHeadersWidth)/(tableColumnHeaders.length)
+    tableColumnWidth = (1750-tableColumnHeadersWidth)/(tableColumnHeaders.length)
 }
 
 function wordWrap(text, targetSize, maxWidth) {
@@ -189,7 +190,7 @@ function loadedPlayerData(data) {
         }
     }
 
-    resizeCanvas(2000, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
+    resizeCanvas(1750, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
 
     print(groupData)
 
@@ -226,7 +227,7 @@ function loadedPlayerData(data) {
         posYAtStartOfGrade += height
     }
 
-    resizeCanvas(2000, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
+    resizeCanvas(1750, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
 }
 
 function sum(arr) {
@@ -238,7 +239,7 @@ function sum(arr) {
 }
 
 function setup() {
-    cnv = createCanvas(2000, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
+    cnv = createCanvas(1750, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
@@ -321,10 +322,33 @@ function draw() {
         miniIcon.displayHoverImage()
     }
 
+    if (popupScreen) {
+        fill(0, 0, 0, 50)
+        rect(0, 0, width, height)
+        textSize(30)
+        fill(0, 0, 100)
+        textAlign(CENTER, CENTER)
+        text("POPUP SCREEN", width/2, height/2)
+    }
+
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
     debugCorner.setText(`fps: ${frameRate().toFixed(0)}`, 1)
     debugCorner.showBottom()
+}
+
+function mousePressed() {
+    if (popupScreen) {
+        popupScreen = false
+        return
+    }
+
+    for (let miniIcon of miniCardIcons) {
+        if (miniIcon.isHovered()) {
+            popupScreen = !popupScreen
+            print(popupScreen)
+        }
+    }
 }
 
 
