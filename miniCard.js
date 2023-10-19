@@ -13,6 +13,7 @@ class MiniCard {
             "common": [0, 0, 50]
         }
         this.iconColor = rarityColors[this.cardRarity]
+        onImage = true
         this.hoverImage = loadImage(imageURL)
         print(this.cardName)
         print(this.cardRarity)

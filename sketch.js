@@ -20,12 +20,15 @@ let miniCardIcons
 let cnv
 let popupScreen = false
 let cardForPopup = null
+let onImage = false
 
 function calculateGrade(zScore) {
-    let result = "F-"  // use this as extra spacing
+    let result = "  "  // use this as extra spacing
 
     // S range
-    if (zScore > (2.5 + 2 / 3))
+    if (zScore > 3.5)
+        result = "S+"
+    else if (zScore > 3)
         result = "S "
     else if (zScore > 2.5)
         result = "S-"
@@ -72,16 +75,17 @@ function preload() {
     fixedWidthFont = loadFont('data/consola.ttf')
     variableWidthFont = loadFont('data/meiryo.ttf')
     table = {
-        "S ": [["", "", "", "", "", "", ""], 14, [(18/18)*190, 50, 100]],
-        "S-": [["", "", "", "", "", "", ""], 14, [(17/18)*190, 74, 99]],
-        "A+": [["", "", "", "", "", "", ""], 14, [(15.5/18)*190, 73, 98]],
-        "A ": [["", "", "", "", "", "", ""], 14, [(14/18)*190, 72, 97]],
-        "A-": [["", "", "", "", "", "", ""], 14, [(12/18)*190, 71, 96]],
-        "B+": [["", "", "", "", "", "", ""], 14, [(10.5/18)*190, 70, 95]],
-        "B ": [["", "", "", "", "", "", ""], 14, [(9/18)*190, 69, 94]],
-        "B-": [["", "", "", "", "", "", ""], 14, [(8/18)*190, 68, 93]],
-        "C+": [["", "", "", "", "", "", ""], 14, [(7/18)*190, 66.5, 92]],
-        "C ": [["", "", "", "", "", "", ""], 14, [(6/18)*190, 65, 91]],
+        "S+": [["", "", "", "", "", "", ""], 14, [(18/18)*190, 0, 100]],
+        "S ": [["", "", "", "", "", "", ""], 14, [(17/18)*190, 15, 100]],
+        "S-": [["", "", "", "", "", "", ""], 14, [(16/18)*190, 30, 100]],
+        "A+": [["", "", "", "", "", "", ""], 14, [(15/18)*190, 40, 100]],
+        "A ": [["", "", "", "", "", "", ""], 14, [(13.5/18)*190, 50, 100]],
+        "A-": [["", "", "", "", "", "", ""], 14, [(12/18)*190, 60, 100]],
+        "B+": [["", "", "", "", "", "", ""], 14, [(10.5/18)*190, 70, 100]],
+        "B ": [["", "", "", "", "", "", ""], 14, [(9/18)*190, 69, 98]],
+        "B-": [["", "", "", "", "", "", ""], 14, [(8/18)*190, 68, 96]],
+        "C+": [["", "", "", "", "", "", ""], 14, [(7/18)*190, 66.5, 94]],
+        "C ": [["", "", "", "", "", "", ""], 14, [(6/18)*190, 65, 92]],
         "C-": [["", "", "", "", "", "", ""], 14, [(5/18)*190, 65, 90]],
         "D+": [["", "", "", "", "", "", ""], 14, [(4/18)*190, 50, 88]],
         "D ": [["", "", "", "", "", "", ""], 14, [(3/18)*190, 50, 86]],
@@ -131,6 +135,7 @@ function loadedPlayerData(data) {
     print(data["cardData"])
 
     let groupData = {
+        "S+": [[[], [], [], [], [], [], []], 14],
         "S ": [[[], [], [], [], [], [], []], 14],
         "S-": [[[], [], [], [], [], [], []], 14],
         "A+": [[[], [], [], [], [], [], []], 14],
@@ -191,8 +196,6 @@ function loadedPlayerData(data) {
         }
     }
 
-    resizeCanvas(1750, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
-
     print(groupData)
 
     miniCardIcons = []
@@ -240,7 +243,7 @@ function sum(arr) {
 }
 
 function setup() {
-    cnv = createCanvas(1750, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
+    cnv = createCanvas(500, 500)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
@@ -260,81 +263,108 @@ function setup() {
 function draw() {
     background(0, 0, 0)
 
-    if (!popupScreen) {
-        background(0, 0, 30)
-        // display top-left cell
-        // black rectangle with "HEADERS" on it
-        fill(0, 0, 0)
-        noStroke()
-        rect(1, 2, tableColumnHeadersWidth - 2, tableColumnHeadersHeight - 4)
+    // loading screen?
+    if (width === 500) {
+        noFill()
+        stroke(0, 0, 25)
+        strokeWeight(10)
+        circle(250, 250, 480)
         textAlign(CENTER, CENTER)
-        fill(0, 0, 100)
-        textSize(10)
-        text("HEADERS", tableColumnHeadersWidth / 2, tableColumnHeadersHeight / 2)
+        noStroke()
         textSize(14)
-        fill(0, 0, 0)
-
-        let posX = tableColumnHeadersWidth
-
-        rectMode(CORNER)
-        imageMode(CENTER)
-
-        // display column header images
-        for (let columnHeader of tableColumnHeaders) {
-            rect(1 + posX, 2, tableColumnWidth - 2, tableColumnHeadersHeight - 4)
-            image(columnHeader, posX + tableColumnWidth / 2, tableColumnHeadersHeight / 2)
-            posX += tableColumnWidth
-        }
-
-        // display row headers and elements
-        let posY = tableColumnHeadersHeight
-        for (let rowHeader in table) {
-            // displaying row header with centered text
-            rect(1, 2 + posY, tableColumnHeadersWidth - 2, table[rowHeader][1] - 4)
-            stroke(table[rowHeader][2][0], table[rowHeader][2][1], table[rowHeader][2][2])
-            strokeWeight(4)
-            line(2, posY, 2, table[rowHeader][1] + posY)
-            noStroke()
-            fill(0, 0, 100)
-            textSize(16)
-            textAlign(CENTER, CENTER)
-            text(rowHeader, tableColumnHeadersWidth / 2, posY + table[rowHeader][1] / 2)
-            // switch to corner text
-            textAlign(LEFT, TOP)
-            textSize(14)
-            fill(0, 0, 17)
-            posX = tableColumnHeadersWidth
-            for (let element of table[rowHeader][0]) {
-                rect(1 + posX, 2 + posY, tableColumnWidth - 2, table[rowHeader][1] - 4)
-                fill(0, 0, 17)
-                posX += tableColumnWidth
-            }
-            textSize(14)
-            fill(0, 0, 0)
-            posY += table[rowHeader][1]
-        }
-        textAlign(LEFT)
-
-        // display all the mini card icons
-        for (let miniIcon of miniCardIcons) {
-            miniIcon.display()
-        }
-
-        // display all the mini card icons
-        for (let miniIcon of miniCardIcons) {
-            miniIcon.displayHoverImage()
+        fill(0, 0, 50)
+        text("Loading...", 250, 250)
+        if (onImage) {
+            textSize(10)
+            text("On images", 250, 270)
         }
     }
+    else {
+        if (!popupScreen) {
+            background(0, 0, 30)
+            // display top-left cell
+            // black rectangle with "HEADERS" on it
+            fill(0, 0, 0)
+            noStroke()
+            rect(1, 2, tableColumnHeadersWidth - 2, tableColumnHeadersHeight - 4)
+            textAlign(CENTER, CENTER)
+            fill(0, 0, 100)
+            textSize(10)
+            text("HEADERS", tableColumnHeadersWidth / 2, tableColumnHeadersHeight / 2)
+            textSize(14)
+            fill(0, 0, 0)
 
-    if (popupScreen) {
-        rectMode(CORNER)
-        fill(0, 0, 50, 50)
-        rect(100, 100, 800, 800)
+            let posX = tableColumnHeadersWidth
 
-        textAlign(LEFT, TOP)
-        textSize(20)
-        fill(0, 0, 100)
-        text(cardForPopup, 110, 110)
+            rectMode(CORNER)
+            imageMode(CENTER)
+
+            // display column header images
+            for (let columnHeader of tableColumnHeaders) {
+                rect(1 + posX, 2, tableColumnWidth - 2, tableColumnHeadersHeight - 4)
+                image(columnHeader, posX + tableColumnWidth / 2, tableColumnHeadersHeight / 2)
+                posX += tableColumnWidth
+            }
+
+            // display row headers and elements
+            let posY = tableColumnHeadersHeight
+            for (let rowHeader in table) {
+                // displaying row header with centered text
+                rect(1, 2 + posY, tableColumnHeadersWidth - 2, table[rowHeader][1] - 4)
+                stroke(table[rowHeader][2][0], table[rowHeader][2][1], table[rowHeader][2][2])
+                strokeWeight(4)
+                line(2, posY, 2, table[rowHeader][1] + posY)
+                noStroke()
+                fill(0, 0, 100)
+                textSize(16)
+                textAlign(CENTER, CENTER)
+                text(rowHeader, tableColumnHeadersWidth / 2, posY + table[rowHeader][1] / 2)
+                // switch to corner text
+                textAlign(LEFT, TOP)
+                textSize(14)
+                fill(0, 0, 17)
+                posX = tableColumnHeadersWidth
+                for (let element of table[rowHeader][0]) {
+                    rect(1 + posX, 2 + posY, tableColumnWidth - 2, table[rowHeader][1] - 4)
+                    fill(0, 0, 17)
+                    posX += tableColumnWidth
+                }
+                textSize(14)
+                fill(0, 0, 0)
+                posY += table[rowHeader][1]
+            }
+            textAlign(LEFT)
+
+            // display all the mini card icons
+            for (let miniIcon of miniCardIcons) {
+                miniIcon.display()
+            }
+
+            // display all the mini card icons
+            for (let miniIcon of miniCardIcons) {
+                miniIcon.displayHoverImage()
+            }
+        }
+
+        // make the popup screen
+        if (popupScreen) {
+            // make a window for the popup screen
+            rectMode(CORNER)
+            fill(0, 0, 50, 50)
+            rect(100, 100, 800, 800)
+
+            // display the card name. all "\n"s should be " "s.
+            textAlign(LEFT, TOP)
+            textSize(20)
+            fill(0, 0, 100)
+            text(cardForPopup.cardName.replaceAll("\n", " "), 110, 110)
+
+            // display the image.
+            image(cardForPopup.hoverImage, 300, 100 + textAscent() + textDescent(), 300,
+                (cardForPopup.hoverImage.height)*(300/(cardForPopup.hoverImage.width))) // keep the same scale
+
+
+        }
     }
 
     /* debugCorner needs to be last so its z-index is highest */
@@ -365,7 +395,7 @@ function mousePressed() {
     for (let miniIcon of miniCardIcons) {
         if (miniIcon.isHovered()) {
             popupScreen = true
-            cardForPopup = miniIcon.cardName
+            cardForPopup = miniIcon
             resizeCanvas(1000, 1000)
             print(popupScreen)
         }
