@@ -1,5 +1,5 @@
 class MiniCard {
-    constructor(name, rarity, posX, posY, width, height, imageURL) {
+    constructor(name, rarity, posX, posY, width, height, imageURL, grade) {
         this.cardName = name
         this.cardRarity = rarity
         this.posX = posX
@@ -15,6 +15,7 @@ class MiniCard {
         this.iconColor = rarityColors[this.cardRarity]
         onImage = true
         this.hoverImage = loadImage(imageURL)
+        this.grade = grade
         print(this.cardName)
         print(this.cardRarity)
         print(this.posX)

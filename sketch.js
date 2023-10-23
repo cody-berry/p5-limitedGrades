@@ -216,7 +216,7 @@ function loadedPlayerData(data) {
                 let numNewlines = wrappedCardName.split("\n").length - 1
                 let additionalHeightTaken = numNewlines*22
                 miniCardIcons.push(
-                    new MiniCard(wrappedCardName, card[1], posX + 2, posY + 2, tableColumnWidth - 4, 20 + additionalHeightTaken, card[2])
+                    new MiniCard(wrappedCardName, card[1], posX + 2, posY + 2, tableColumnWidth - 4, 20 + additionalHeightTaken, card[2], grade)
                 )
 
                 groupData[grade][1] += additionalHeightTaken
@@ -350,20 +350,71 @@ function draw() {
         if (popupScreen) {
             // make a window for the popup screen
             rectMode(CORNER)
-            fill(0, 0, 50, 50)
-            rect(100, 100, 800, 800)
+            fill(0, 0, 25)
+            rect(100, 100, 1300, 800)
 
-            // display the card name. all "\n"s should be " "s.
+            // display the card name. all "\n"s should be " "s
             textAlign(LEFT, TOP)
             textSize(20)
             fill(0, 0, 100)
             text(cardForPopup.cardName.replaceAll("\n", " "), 110, 110)
 
-            // display the image.
-            image(cardForPopup.hoverImage, 300, 100 + textAscent() + textDescent(), 300,
+            // display the image
+            image(cardForPopup.hoverImage, 110, 110 + textAscent() + textDescent(), 300,
                 (cardForPopup.hoverImage.height)*(300/(cardForPopup.hoverImage.width))) // keep the same scale
 
+            // find the grade and the color for the grade
+            let grade = cardForPopup.grade
+            let colorForGrade = table[grade][2]
 
+            // display the top part of the rectangle
+            stroke(colorForGrade[0], colorForGrade[1], colorForGrade[2])
+            strokeWeight(2)
+            line(500, 210, 500, 260)
+            line(500, 210, 1320, 210)
+            line(1320, 210, 1320, 260)
+
+            // display the bottom part of the rectangle
+            stroke(0, 0, 50)
+            strokeWeight(2)
+            line(500, 310, 500, 260)
+            line(500, 310, 1320, 310)
+            line(1320, 310, 1320, 260)
+            noStroke()
+
+            // display the grade and calibre
+            fill(colorForGrade[0], colorForGrade[1], colorForGrade[2])
+            rect(505, 215, 90, 42)
+            fill(0, 0, 50)
+            rect(505, 263, 90, 42)
+            fill(0, 0, 25)
+            textAlign(CENTER, CENTER)
+            text(grade, 550, 233)
+            text("ALL", 545, 282)
+
+            // display the graphs
+            fill(0, 0, 10)
+            textSize(15)
+            text("0K", 625, 180)
+            text("10K", 675, 180)
+            text("20K", 725, 180)
+            text("45%", 775, 180)
+            text("50%", 875, 180)
+            text("55%", 975, 180)
+            text("60%", 1075, 180)
+            text("65%", 1175, 180)
+            text("75%", 1275, 180)
+            stroke(0, 0, 10)
+            strokeWeight(1)
+            line(625, 190, 625, 400)
+            line(675, 190, 675, 400)
+            line(725, 190, 725, 400)
+            line(775, 190, 775, 400)
+            line(875, 190, 875, 400)
+            line(975, 190, 975, 400)
+            line(1075, 190, 1075, 400)
+            line(1175, 190, 1175, 400)
+            line(1275, 190, 1275, 400)
         }
     }
 
@@ -396,7 +447,7 @@ function mousePressed() {
         if (miniIcon.isHovered()) {
             popupScreen = true
             cardForPopup = miniIcon
-            resizeCanvas(1000, 1000)
+            resizeCanvas(1500, 1000)
             print(popupScreen)
         }
     }
