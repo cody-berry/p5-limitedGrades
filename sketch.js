@@ -21,6 +21,7 @@ let cnv
 let popupScreen = false
 let cardForPopup = null
 let onImage = false
+let arrivingNumber
 
 function calculateGrade(zScore) {
     let result = "  "  // use this as extra spacing
@@ -461,9 +462,19 @@ function draw() {
             // starts at 45, gains 100 x position for every 5 WR added
             let xPositionForWinrate = 775 + (winrate-45)*(100/5)
             let xPositionForWinrateMean = 775 + (winrateMean-45)*(100/5)
+
+            if (arrivingNumber) {
+                arrivingNumber.arrive()
+                arrivingNumber.update()
+            } else {
+                arrivingNumber = new ArrivingNumber(3, 15)
+                arrivingNumber.target = xPositionForWinrate
+                arrivingNumber.pos = xPositionForWinrateMean
+            }
+
             stroke(0, 0, 50)
             strokeWeight(1)
-            line(xPositionForWinrate, 260, xPositionForWinrateMean, 260)
+            line(arrivingNumber.pos, 260, xPositionForWinrateMean, 260)
 
             stroke(0, 0, 100)
             strokeWeight(5)
@@ -498,6 +509,7 @@ function mousePressed() {
         ) {
             popupScreen = false
             cardForPopup = null
+            arrivingNumber = null
             resizeCanvas(1750, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
         }
             return
