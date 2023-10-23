@@ -22,6 +22,19 @@ let popupScreen = false
 let cardForPopup = null
 let onImage = false
 let arrivingNumber
+let arrivingNumbersForColorPairs = {
+    "WU": null,
+    "UB": null,
+    "BR": null,
+    "RG": null,
+    "WG": null,
+    "WB": null,
+    "BG": null,
+    "UG": null,
+    "UR": null,
+    "WR": null
+}
+let winrateStatistics
 
 function calculateGrade(zScore) {
     let result = "  "  // use this as extra spacing
@@ -80,8 +93,8 @@ function preload() {
         "S ": [["", "", "", "", "", "", ""], 14, [(17/18)*190, 15, 100]],
         "S-": [["", "", "", "", "", "", ""], 14, [(16/18)*190, 30, 100]],
         "A+": [["", "", "", "", "", "", ""], 14, [(15/18)*190, 40, 100]],
-        "A ": [["", "", "", "", "", "", ""], 14, [(13.5/18)*190, 50, 100]],
-        "A-": [["", "", "", "", "", "", ""], 14, [(12/18)*190, 60, 100]],
+        "A ": [["", "", "", "", "", "", ""], 14, [(13.5/18)*190, 55, 100]],
+        "A-": [["", "", "", "", "", "", ""], 14, [(12/18)*190, 70, 100]],
         "B+": [["", "", "", "", "", "", ""], 14, [(10.5/18)*190, 70, 100]],
         "B ": [["", "", "", "", "", "", ""], 14, [(9/18)*190, 69, 98]],
         "B-": [["", "", "", "", "", "", ""], 14, [(8/18)*190, 68, 96]],
@@ -106,6 +119,7 @@ function preload() {
         loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159113092282724432/image.png?ex=651eb3b0&is=651d6230&hm=bc388c75d916ed1aacc60f4951fcab0a2359e762d9db0d2a6be7a2150da1032f&"),
     ]
     tableColumnWidth = (1750-tableColumnHeadersWidth)/(tableColumnHeaders.length)
+    winrateStatistics = loadJSON("json/statistics.json")
 }
 
 function wordWrap(text, targetSize, maxWidth) {
@@ -154,19 +168,14 @@ function loadedPlayerData(data) {
         "E ": [[[], [], [], [], [], [], []], 14],
         "F ": [[[], [], [], [], [], [], []], 14],
     }
-    let cardNames = Object.keys(data["cardData"])
+    let cardNames = Object.keys(data)
     for (let cardName of cardNames) {
         // special no-data handling
-        if (data["cardData"][cardName]["zScoreGIH"]) {
-            // print data for card
-            print(cardName)
-            print(calculateGrade(data["cardData"][cardName]["zScoreGIH"]))
-            print(data["cardData"][cardName]["zScoreGIH"])
-
+        if (data[cardName]["all"]["zScoreGIH"]) {
             // figure out which part of the table to put it in
-            let grade = calculateGrade(data["cardData"][cardName]["zScoreGIH"])
+            let grade = calculateGrade(data[cardName]["all"]["zScoreGIH"])
             let tableIndex = 6 // assume that it's colorless
-            let color = data["cardData"][cardName]["Color"]
+            let color = data[cardName]["color"]
             if (color === "W")
                 tableIndex = 0
             if (color === "U")
@@ -183,17 +192,14 @@ function loadedPlayerData(data) {
             print(color)
 
             groupData[grade][0][tableIndex].push(
-                [cardName, data["cardData"][cardName]["Rarity"], data["cardData"][cardName]["url"]]
+                [cardName, data[cardName]["rarity"], data[cardName]["all"]["url"]]
             )
 
             // figure out how large the block should be
             groupData[grade][1] = max(groupData[grade][1], groupData[grade][0][tableIndex].length*(24) + 4)
             table[grade][1] = groupData[grade][1]
-
-            print("")
         } else {
             print(`No data for ${cardName}`)
-            print("")
         }
     }
 
@@ -248,7 +254,7 @@ function setup() {
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
-    data = loadJSON("json/all.json", loadedPlayerData)
+    data = loadJSON("json/master.json", loadedPlayerData)
 
     miniCardIcons = []
 
@@ -394,16 +400,14 @@ function draw() {
             text("ALL", 545, 282)
 
             // display the graphs
-            fill(0, 0, 10)
-            textSize(15)
             let samplesPerFiftyXPosition = 5000
             let samplesPerFiftyXPositionInterpretation = "5K"
             let samplesPerHundredXPositionInterpretation = "10K"
-            let cardData = data["cardData"][cardForPopup.cardName]
+            let cardData = data[cardForPopup.cardName.replaceAll("\n", " ")]["all"]
             let samples = cardData["# GIH"]
             let winrate = parseFloat(cardData["GIH WR"].substring(0, cardData["GIH" +
             " WR"].length - 1))
-            let winrateMean = data["generalStats"]["GIH WR"]["μ"]
+            let winrateMean = winrateStatistics["all"]["GIH WR"]["μ"]
             if (samples > 12000) {
                 samplesPerFiftyXPosition = 10000
                 samplesPerFiftyXPositionInterpretation = "10K"
@@ -430,6 +434,8 @@ function draw() {
                 samplesPerHundredXPositionInterpretation = "200K"
             }
 
+            fill(0, 0, 100, 75)
+            textSize(10)
             text("0", 625, 180)
             text(samplesPerFiftyXPositionInterpretation, 675, 180)
             text(samplesPerHundredXPositionInterpretation, 725, 180)
@@ -439,17 +445,17 @@ function draw() {
             text("60%", 1075, 180)
             text("65%", 1175, 180)
             text("70%", 1275, 180)
-            stroke(0, 0, 10)
+            stroke(0, 0, 100, 75)
             strokeWeight(1)
-            line(625, 190, 625, 400)
-            line(675, 190, 675, 400)
-            line(725, 190, 725, 400)
-            line(775, 190, 775, 400)
-            line(875, 190, 875, 400)
-            line(975, 190, 975, 400)
-            line(1075, 190, 1075, 400)
-            line(1175, 190, 1175, 400)
-            line(1275, 190, 1275, 400)
+            line(625, 190, 625, 900)
+            line(675, 190, 675, 900)
+            line(725, 190, 725, 900)
+            line(775, 190, 775, 900)
+            line(875, 190, 875, 900)
+            line(975, 190, 975, 900)
+            line(1075, 190, 1075, 900)
+            line(1175, 190, 1175, 900)
+            line(1275, 190, 1275, 900)
 
             // display card data appropriately
             // display the dot for the samples
@@ -467,7 +473,7 @@ function draw() {
                 arrivingNumber.arrive()
                 arrivingNumber.update()
             } else {
-                arrivingNumber = new ArrivingNumber(3, 15)
+                arrivingNumber = new ArrivingNumber(2, 15)
                 arrivingNumber.target = xPositionForWinrate
                 arrivingNumber.pos = xPositionForWinrateMean
             }
