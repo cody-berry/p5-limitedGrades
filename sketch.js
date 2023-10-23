@@ -400,6 +400,9 @@ function draw() {
             let samplesPerHundredXPositionInterpretation = "10K"
             let cardData = data["cardData"][cardForPopup.cardName]
             let samples = cardData["# GIH"]
+            let winrate = parseFloat(cardData["GIH WR"].substring(0, cardData["GIH" +
+            " WR"].length - 1))
+            let winrateMean = data["generalStats"]["GIH WR"]["μ"]
             if (samples > 12000) {
                 samplesPerFiftyXPosition = 10000
                 samplesPerFiftyXPositionInterpretation = "10K"
@@ -425,6 +428,7 @@ function draw() {
                 samplesPerFiftyXPositionInterpretation = "100K"
                 samplesPerHundredXPositionInterpretation = "200K"
             }
+
             text("0", 625, 180)
             text(samplesPerFiftyXPositionInterpretation, 675, 180)
             text(samplesPerHundredXPositionInterpretation, 725, 180)
@@ -449,9 +453,26 @@ function draw() {
             // display card data appropriately
             // display the dot for the samples
             stroke(0, 0, 100)
-            strokeWeight(3)
+            strokeWeight(5)
 
             point(625 + samples/(samplesPerFiftyXPosition/50), 260)
+
+            // display the dot for the GIH WR mean
+            // starts at 45, gains 100 x position for every 5 WR added
+            let xPositionForWinrate = 775 + (winrate-45)*(100/5)
+            let xPositionForWinrateMean = 775 + (winrateMean-45)*(100/5)
+            stroke(0, 0, 50)
+            strokeWeight(1)
+            line(xPositionForWinrate, 260, xPositionForWinrateMean, 260)
+
+            stroke(0, 0, 100)
+            strokeWeight(5)
+            point(xPositionForWinrate, 260)
+
+            stroke(0, 0, 75)
+            strokeWeight(3)
+            point(xPositionForWinrateMean, 260)
+
 
             noStroke()
         }
