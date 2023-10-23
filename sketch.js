@@ -395,15 +395,45 @@ function draw() {
             // display the graphs
             fill(0, 0, 10)
             textSize(15)
-            text("0K", 625, 180)
-            text("10K", 675, 180)
-            text("20K", 725, 180)
+            let samplesPerFiftyXPosition = 5000
+            let samplesPerFiftyXPositionInterpretation = "5K"
+            let samplesPerHundredXPositionInterpretation = "10K"
+            let cardData = data["cardData"][cardForPopup.cardName]
+            let samples = cardData["# GIH"]
+            if (samples > 12000) {
+                samplesPerFiftyXPosition = 10000
+                samplesPerFiftyXPositionInterpretation = "10K"
+                samplesPerHundredXPositionInterpretation = "20K"
+            } if (samples > 24000) {
+                samplesPerFiftyXPosition = 20000
+                samplesPerFiftyXPositionInterpretation = "20K"
+                samplesPerHundredXPositionInterpretation = "40K"
+            } if (samples > 45000) {
+                samplesPerFiftyXPosition = 25000
+                samplesPerFiftyXPositionInterpretation = "25K"
+                samplesPerHundredXPositionInterpretation = "50K"
+            } if (samples > 60000) {
+                samplesPerFiftyXPosition = 40000
+                samplesPerFiftyXPositionInterpretation = "40K"
+                samplesPerHundredXPositionInterpretation = "80K"
+            } if (samples > 90000) {
+                samplesPerFiftyXPosition = 60000
+                samplesPerFiftyXPositionInterpretation = "60K"
+                samplesPerHundredXPositionInterpretation = "120K"
+            } if (samples > 130000) {
+                samplesPerFiftyXPosition = 100000
+                samplesPerFiftyXPositionInterpretation = "100K"
+                samplesPerHundredXPositionInterpretation = "200K"
+            }
+            text("0", 625, 180)
+            text(samplesPerFiftyXPositionInterpretation, 675, 180)
+            text(samplesPerHundredXPositionInterpretation, 725, 180)
             text("45%", 775, 180)
             text("50%", 875, 180)
             text("55%", 975, 180)
             text("60%", 1075, 180)
             text("65%", 1175, 180)
-            text("75%", 1275, 180)
+            text("70%", 1275, 180)
             stroke(0, 0, 10)
             strokeWeight(1)
             line(625, 190, 625, 400)
@@ -415,6 +445,15 @@ function draw() {
             line(1075, 190, 1075, 400)
             line(1175, 190, 1175, 400)
             line(1275, 190, 1275, 400)
+
+            // display card data appropriately
+            // display the dot for the samples
+            stroke(0, 0, 100)
+            strokeWeight(3)
+
+            point(625 + samples/(samplesPerFiftyXPosition/50), 260)
+
+            noStroke()
         }
     }
 
