@@ -358,7 +358,7 @@ function draw() {
             // make a window for the popup screen
             rectMode(CORNER)
             fill(0, 0, 25)
-            rect(100, 100, 1300, 800)
+            rect(100, 100, 1300, 1800)
 
             // display the card name. all "\n"s should be " "s
             textAlign(LEFT, TOP)
@@ -400,15 +400,23 @@ function draw() {
             text("ALL", 545, 282)
 
             // display the graphs
-            let samplesPerFiftyXPosition = 5000
-            let samplesPerFiftyXPositionInterpretation = "5K"
-            let samplesPerHundredXPositionInterpretation = "10K"
+            let samplesPerFiftyXPosition = 1000
+            let samplesPerFiftyXPositionInterpretation = "1K"
+            let samplesPerHundredXPositionInterpretation = "2K"
             let cardData = data[cardForPopup.cardName.replaceAll("\n", " ")]["all"]
             let samples = cardData["# GIH"]
             let winrate = parseFloat(cardData["GIH WR"].substring(0, cardData["GIH" +
             " WR"].length - 1))
             let winrateMean = winrateStatistics["all"]["GIH WR"]["μ"]
-            if (samples > 12000) {
+            if (samples > 2400) {
+                samplesPerFiftyXPosition = 2000
+                samplesPerFiftyXPositionInterpretation = "2K"
+                samplesPerHundredXPositionInterpretation = "4K"
+            } if (samples > 5000) {
+                samplesPerFiftyXPosition = 5000
+                samplesPerFiftyXPositionInterpretation = "5K"
+                samplesPerHundredXPositionInterpretation = "10K"
+            }if (samples > 12000) {
                 samplesPerFiftyXPosition = 10000
                 samplesPerFiftyXPositionInterpretation = "10K"
                 samplesPerHundredXPositionInterpretation = "20K"
@@ -427,11 +435,11 @@ function draw() {
             } if (samples > 90000) {
                 samplesPerFiftyXPosition = 60000
                 samplesPerFiftyXPositionInterpretation = "60K"
-                samplesPerHundredXPositionInterpretation = "120K"
+                samplesPerHundredXPositionInterpretation = "0.12M"
             } if (samples > 130000) {
                 samplesPerFiftyXPosition = 100000
-                samplesPerFiftyXPositionInterpretation = "100K"
-                samplesPerHundredXPositionInterpretation = "200K"
+                samplesPerFiftyXPositionInterpretation = "0.1M"
+                samplesPerHundredXPositionInterpretation = "0.2M"
             }
 
             fill(0, 0, 100, 75)
@@ -447,15 +455,15 @@ function draw() {
             text("70%", 1275, 180)
             stroke(0, 0, 100, 75)
             strokeWeight(1)
-            line(625, 190, 625, 900)
-            line(675, 190, 675, 900)
-            line(725, 190, 725, 900)
-            line(775, 190, 775, 900)
-            line(875, 190, 875, 900)
-            line(975, 190, 975, 900)
-            line(1075, 190, 1075, 900)
-            line(1175, 190, 1175, 900)
-            line(1275, 190, 1275, 900)
+            line(625, 190, 625, 1900)
+            line(675, 190, 675, 1900)
+            line(725, 190, 725, 1900)
+            line(775, 190, 775, 1900)
+            line(875, 190, 875, 1900)
+            line(975, 190, 975, 1900)
+            line(1075, 190, 1075, 1900)
+            line(1175, 190, 1175, 1900)
+            line(1275, 190, 1275, 1900)
 
             // display card data appropriately
             // display the dot for the samples
@@ -490,6 +498,113 @@ function draw() {
             strokeWeight(3)
             point(xPositionForWinrateMean, 260)
 
+            let yPos = 330
+
+            // now, iterate through each archetype
+            for (let colorPair of [
+                "WU", "UB", "BR", "RG", "WG",
+                "WB", "BG", "UG", "UR", "WR"
+            ]) {
+                // get the data for the card
+                cardData = data[cardForPopup.cardName.replaceAll("\n", " ")][colorPair]
+                // the data for the card looks like: {
+                // "GIH WR": "55.4%",
+                // "zScoreGIH": 0.227,
+                // "OH WR": "51.1%",
+                // "zScoreOH": 0.0,
+                // "IWD": "5.75pp",
+                // "zScoreIWD": 0.347,
+                // "# GIH": 1650,
+                // "# OH": 570,
+                // "# GNS": 1982,
+                // "# GD": 1080,
+                // }
+                // when there's not enough data, it looks like: {
+                // "GIH WR": "",
+                // "zScoreGIH": 0,
+                // "OH WR": "",
+                // "zScoreOH": 0,
+                // "IWD": "",
+                // "zScoreIWD": 0,
+                // "# GIH": 20,
+                // "# OH": 4,
+                // "# GNS": 29,
+                // "# GD": 16
+                // }
+
+                // check if the GIH WR is empty or not
+                if (cardData["GIH WR"] !== "") {
+                    // find the grade and the color for the grade
+                    grade = calculateGrade(cardData["zScoreGIH"])
+                    colorForGrade = table[grade][2]
+
+                    // display the top part of the rectangle
+                    stroke(colorForGrade[0], colorForGrade[1], colorForGrade[2])
+                    strokeWeight(2)
+                    line(500, yPos, 500, yPos + 50)
+                    line(500, yPos, 1320, yPos)
+                    line(1320, yPos, 1320, yPos + 50)
+
+                    // display the bottom part of the rectangle
+                    stroke(0, 0, 50)
+                    strokeWeight(2)
+                    line(500, yPos + 100, 500, yPos + 50)
+                    line(500, yPos + 100, 1320, yPos + 100)
+                    line(1320, yPos + 100, 1320, yPos + 50)
+                    noStroke()
+
+                    // display the grade and calibre
+                    textSize(20)
+                    fill(colorForGrade[0], colorForGrade[1], colorForGrade[2])
+                    rect(505, yPos + 5, 90, 42)
+                    fill(0, 0, 50)
+                    rect(505, yPos + 53, 90, 42)
+                    fill(0, 0, 25)
+                    textAlign(CENTER, CENTER)
+                    text(grade, 550, yPos + 23)
+                    text(colorPair, 545, yPos + 72)
+
+                    let samples = cardData["# GIH"]
+                    let winrate = parseFloat(cardData["GIH WR"].substring(0, cardData["GIH" +
+                    " WR"].length - 1))
+                    let winrateMean = winrateStatistics[colorPair]["GIH WR"]["μ"]
+
+                    // display card data appropriately
+                    // display the dot for the samples
+                    stroke(0, 0, 100)
+                    strokeWeight(5)
+
+                    point(625 + samples/(samplesPerFiftyXPosition/50), yPos + 50)
+
+                    // display the dot for the GIH WR mean
+                    // starts at 45, gains 100 x position for every 5 WR added
+                    let xPositionForWinrate = 775 + (winrate-45)*(100/5)
+                    let xPositionForWinrateMean = 775 + (winrateMean-45)*(100/5)
+
+                    if (arrivingNumber[colorPair]) {
+                        arrivingNumber[colorPair].arrive()
+                        arrivingNumber[colorPair].update()
+                    } else {
+                        arrivingNumber[colorPair] = new ArrivingNumber(2, 15)
+                        arrivingNumber[colorPair].target = xPositionForWinrate
+                        arrivingNumber[colorPair].pos = xPositionForWinrateMean
+                    }
+
+                    stroke(0, 0, 50)
+                    strokeWeight(1)
+                    line(arrivingNumber[colorPair].pos, yPos + 50, xPositionForWinrateMean, yPos + 50)
+
+                    stroke(0, 0, 100)
+                    strokeWeight(5)
+                    point(xPositionForWinrate, yPos + 50)
+
+                    stroke(0, 0, 75)
+                    strokeWeight(3)
+                    point(xPositionForWinrateMean, yPos + 50)
+
+                    yPos += 120
+                }
+            }
 
             noStroke()
         }
@@ -516,6 +631,18 @@ function mousePressed() {
             popupScreen = false
             cardForPopup = null
             arrivingNumber = null
+            arrivingNumbersForColorPairs = {
+                "WU": null,
+                "UB": null,
+                "BR": null,
+                "RG": null,
+                "WG": null,
+                "WB": null,
+                "BG": null,
+                "UG": null,
+                "UR": null,
+                "WR": null
+            }
             resizeCanvas(1750, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
         }
             return
@@ -525,7 +652,7 @@ function mousePressed() {
         if (miniIcon.isHovered()) {
             popupScreen = true
             cardForPopup = miniIcon
-            resizeCanvas(1500, 1000)
+            resizeCanvas(1500, 2000)
             print(popupScreen)
         }
     }
