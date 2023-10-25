@@ -358,7 +358,7 @@ function draw() {
             // make a window for the popup screen
             rectMode(CORNER)
             fill(0, 0, 25)
-            rect(100, 100, 1300, 1800)
+            rect(100, 100, 1300, 800)
 
             // display the card name. all "\n"s should be " "s
             textAlign(LEFT, TOP)
@@ -374,30 +374,22 @@ function draw() {
             let grade = cardForPopup.grade
             let colorForGrade = table[grade][2]
 
-            // display the top part of the rectangle
+            // display the rectangle
             stroke(colorForGrade[0], colorForGrade[1], colorForGrade[2])
-            strokeWeight(2)
-            line(500, 210, 500, 260)
-            line(500, 210, 1320, 210)
-            line(1320, 210, 1320, 260)
+            noFill()
+            rect(500, 210, 820, 52)
 
-            // display the bottom part of the rectangle
-            stroke(0, 0, 50)
-            strokeWeight(2)
-            line(500, 310, 500, 260)
-            line(500, 310, 1320, 310)
-            line(1320, 310, 1320, 260)
             noStroke()
 
             // display the grade and calibre
             fill(colorForGrade[0], colorForGrade[1], colorForGrade[2])
-            rect(505, 215, 90, 42)
+            rect(505, 215, 42, 42)
             fill(0, 0, 50)
-            rect(505, 263, 90, 42)
+            rect(550, 215, 43, 42)
             fill(0, 0, 25)
             textAlign(CENTER, CENTER)
-            text(grade, 550, 233)
-            text("ALL", 545, 282)
+            text(grade, 530, 233)
+            text("ALL", 570, 233)
 
             // display the graphs
             let samplesPerFiftyXPosition = 1000
@@ -455,22 +447,22 @@ function draw() {
             text("70%", 1275, 180)
             stroke(0, 0, 100, 75)
             strokeWeight(1)
-            line(625, 190, 625, 1900)
-            line(675, 190, 675, 1900)
-            line(725, 190, 725, 1900)
-            line(775, 190, 775, 1900)
-            line(875, 190, 875, 1900)
-            line(975, 190, 975, 1900)
-            line(1075, 190, 1075, 1900)
-            line(1175, 190, 1175, 1900)
-            line(1275, 190, 1275, 1900)
+            line(625, 190, 625, 900)
+            line(675, 190, 675, 900)
+            line(725, 190, 725, 900)
+            line(775, 190, 775, 900)
+            line(875, 190, 875, 900)
+            line(975, 190, 975, 900)
+            line(1075, 190, 1075, 900)
+            line(1175, 190, 1175, 900)
+            line(1275, 190, 1275, 900)
 
             // display card data appropriately
             // display the dot for the samples
             stroke(0, 0, 100)
             strokeWeight(5)
 
-            point(625 + samples/(samplesPerFiftyXPosition/50), 260)
+            point(625 + samples/(samplesPerFiftyXPosition/50), 235)
 
             // display the dot for the GIH WR mean
             // starts at 45, gains 100 x position for every 5 WR added
@@ -488,17 +480,17 @@ function draw() {
 
             stroke(0, 0, 50)
             strokeWeight(1)
-            line(arrivingNumber.pos, 260, xPositionForWinrateMean, 260)
+            line(arrivingNumber.pos, 235, xPositionForWinrateMean, 235)
 
             stroke(0, 0, 100)
             strokeWeight(5)
-            point(xPositionForWinrate, 260)
+            point(xPositionForWinrate, 235)
 
             stroke(0, 0, 75)
             strokeWeight(3)
-            point(xPositionForWinrateMean, 260)
+            point(xPositionForWinrateMean, 235)
 
-            let yPos = 330
+            let yPos = 270
 
             // now, iterate through each archetype
             for (let colorPair of [
@@ -538,31 +530,23 @@ function draw() {
                     grade = calculateGrade(cardData["zScoreGIH"])
                     colorForGrade = table[grade][2]
 
-                    // display the top part of the rectangle
+                    // display the rectangle
                     stroke(colorForGrade[0], colorForGrade[1], colorForGrade[2])
-                    strokeWeight(2)
-                    line(500, yPos, 500, yPos + 50)
-                    line(500, yPos, 1320, yPos)
-                    line(1320, yPos, 1320, yPos + 50)
+                    noFill()
+                    rect(500, yPos, 820, 52)
 
-                    // display the bottom part of the rectangle
-                    stroke(0, 0, 50)
-                    strokeWeight(2)
-                    line(500, yPos + 100, 500, yPos + 50)
-                    line(500, yPos + 100, 1320, yPos + 100)
-                    line(1320, yPos + 100, 1320, yPos + 50)
                     noStroke()
 
                     // display the grade and calibre
-                    textSize(20)
                     fill(colorForGrade[0], colorForGrade[1], colorForGrade[2])
-                    rect(505, yPos + 5, 90, 42)
+                    rect(505, yPos + 5, 42, 42)
                     fill(0, 0, 50)
-                    rect(505, yPos + 53, 90, 42)
+                    rect(550, yPos + 5, 43, 42)
                     fill(0, 0, 25)
                     textAlign(CENTER, CENTER)
-                    text(grade, 550, yPos + 23)
-                    text(colorPair, 545, yPos + 72)
+                    textSize(20)
+                    text(grade, 530, yPos + 23)
+                    text(colorPair, 570, yPos + 23)
 
                     let samples = cardData["# GIH"]
                     let winrate = parseFloat(cardData["GIH WR"].substring(0, cardData["GIH" +
@@ -574,7 +558,7 @@ function draw() {
                     stroke(0, 0, 100)
                     strokeWeight(5)
 
-                    point(625 + samples/(samplesPerFiftyXPosition/50), yPos + 50)
+                    point(625 + samples/(samplesPerFiftyXPosition/50), yPos + 25)
 
                     // display the dot for the GIH WR mean
                     // starts at 45, gains 100 x position for every 5 WR added
@@ -592,17 +576,17 @@ function draw() {
 
                     stroke(0, 0, 50)
                     strokeWeight(1)
-                    line(arrivingNumber[colorPair].pos, yPos + 50, xPositionForWinrateMean, yPos + 50)
+                    line(arrivingNumber[colorPair].pos, yPos + 25, xPositionForWinrateMean, yPos + 25)
 
                     stroke(0, 0, 100)
                     strokeWeight(5)
-                    point(xPositionForWinrate, yPos + 50)
+                    point(xPositionForWinrate, yPos + 25)
 
                     stroke(0, 0, 75)
                     strokeWeight(3)
-                    point(xPositionForWinrateMean, yPos + 50)
+                    point(xPositionForWinrateMean, yPos + 25)
 
-                    yPos += 120
+                    yPos += 60
                 }
             }
 
@@ -652,7 +636,7 @@ function mousePressed() {
         if (miniIcon.isHovered()) {
             popupScreen = true
             cardForPopup = miniIcon
-            resizeCanvas(1500, 2000)
+            resizeCanvas(1500, 1000)
             print(popupScreen)
         }
     }
