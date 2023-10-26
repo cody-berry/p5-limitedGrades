@@ -35,6 +35,7 @@ let arrivingNumbersForColorPairs = {
     "WR": null
 }
 let winrateStatistics
+let WUBRG
 
 function calculateGrade(zScore) {
     let result = "  "  // use this as extra spacing
@@ -121,6 +122,13 @@ function preload() {
         loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159112990205935697/image.png?ex=651eb398&is=651d6218&hm=3db33cb8c9ed7541f2fb6d995f1c3b6a1bb95ccb75f062ad298e079d0657bcc4&"),
         loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159113064193462293/image.png?ex=651eb3a9&is=651d6229&hm=9be9257233b621639107550717f7387a72965679c5853577398e04cfeb98eb2f&"),
         loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159113092282724432/image.png?ex=651eb3b0&is=651d6230&hm=bc388c75d916ed1aacc60f4951fcab0a2359e762d9db0d2a6be7a2150da1032f&"),
+    ]
+    WUBRG = [
+        loadImage("WUBRG/W.png"),
+        loadImage("WUBRG/U.png"),
+        loadImage("WUBRG/B.png"),
+        loadImage("WUBRG/R.png"),
+        loadImage("WUBRG/G.png"),
     ]
     tableColumnWidth = (1750-tableColumnHeadersWidth)/(tableColumnHeaders.length)
     winrateStatistics = loadJSON("json/statistics.json")
@@ -576,7 +584,7 @@ function draw() {
                     textAlign(CENTER, CENTER)
                     textSize(20)
                     text(grade, 530, yPos + 23)
-                    text(colorPair, 570, yPos + 23)
+                    displayManaSymbols(colorPair, 570, yPos + 23)
 
                     let samples = cardData["# GIH"]
                     let winrate = parseFloat(cardData["GIH WR"].substring(0, cardData["GIH" +
@@ -633,6 +641,32 @@ function draw() {
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
     debugCorner.setText(`fps: ${frameRate().toFixed(0)}`, 1)
     debugCorner.showBottom()
+}
+
+function displayManaSymbols(colorPair, x, y) {
+    let currentX = x - (colorPair.length)*15
+    for (let color of colorPair) {
+        displayManaSymbol(color, currentX + 15, y)
+        currentX += 30
+    }
+}
+
+function displayManaSymbol(color, x, y) {
+    let manaSymbol = WUBRG[0] // white
+    if (color === "U") {
+        manaSymbol = WUBRG[1]
+    } if (color === "B") {
+        manaSymbol = WUBRG[2]
+    } if (color === "R") {
+        manaSymbol = WUBRG[3]
+    } if (color === "G") {
+        manaSymbol = WUBRG[4]
+    }
+
+    imageMode(CENTER)
+    print(manaSymbol.width, manaSymbol.height)
+    image(manaSymbol, x, y)
+    imageMode(CORNER)
 }
 
 function mousePressed() {
