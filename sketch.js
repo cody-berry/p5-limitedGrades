@@ -39,8 +39,11 @@ let winrateStatistics
 function calculateGrade(zScore) {
     let result = "  "  // use this as extra spacing
 
+    // special: SS
+    if (zScore > 4)
+        result = "SS"
     // S range
-    if (zScore > 3.5)
+    else if (zScore > 3.5)
         result = "S+"
     else if (zScore > 3)
         result = "S "
@@ -89,23 +92,24 @@ function preload() {
     fixedWidthFont = loadFont('data/consola.ttf')
     variableWidthFont = loadFont('data/meiryo.ttf')
     table = {
-        "S+": [["", "", "", "", "", "", ""], 14, [(18/18)*190, 0, 100]],
-        "S ": [["", "", "", "", "", "", ""], 14, [(17/18)*190, 15, 100]],
-        "S-": [["", "", "", "", "", "", ""], 14, [(16/18)*190, 30, 100]],
-        "A+": [["", "", "", "", "", "", ""], 14, [(15/18)*190, 40, 100]],
-        "A ": [["", "", "", "", "", "", ""], 14, [(13.5/18)*190, 55, 100]],
-        "A-": [["", "", "", "", "", "", ""], 14, [(12/18)*190, 70, 100]],
-        "B+": [["", "", "", "", "", "", ""], 14, [(10.5/18)*190, 70, 100]],
-        "B ": [["", "", "", "", "", "", ""], 14, [(9/18)*190, 69, 98]],
-        "B-": [["", "", "", "", "", "", ""], 14, [(8/18)*190, 68, 96]],
-        "C+": [["", "", "", "", "", "", ""], 14, [(7/18)*190, 66.5, 94]],
-        "C ": [["", "", "", "", "", "", ""], 14, [(6/18)*190, 65, 92]],
-        "C-": [["", "", "", "", "", "", ""], 14, [(5/18)*190, 65, 90]],
-        "D+": [["", "", "", "", "", "", ""], 14, [(4/18)*190, 50, 88]],
-        "D ": [["", "", "", "", "", "", ""], 14, [(3/18)*190, 50, 86]],
-        "D-": [["", "", "", "", "", "", ""], 14, [(2/18)*190, 50, 84]],
-        "E ": [["", "", "", "", "", "", ""], 14, [(1/18)*190, 50, 82]],
-        "F ": [["", "", "", "", "", "", ""], 14, [(0/18)*190, 50, 80]],
+        "SS": [["", "", "", "", "", "", ""], 20, [(18/18)*190, 0, 100]],
+        "S+": [["", "", "", "", "", "", ""], 20, [(17/18)*190, 15, 100]],
+        "S ": [["", "", "", "", "", "", ""], 20, [(16/18)*190, 30, 100]],
+        "S-": [["", "", "", "", "", "", ""], 20, [(15/18)*190, 40, 100]],
+        "A+": [["", "", "", "", "", "", ""], 20, [(14/18)*190, 50, 100]],
+        "A ": [["", "", "", "", "", "", ""], 20, [(13/18)*190, 60, 100]],
+        "A-": [["", "", "", "", "", "", ""], 20, [(12/18)*190, 70, 100]],
+        "B+": [["", "", "", "", "", "", ""], 20, [(10.5/18)*190, 70, 100]],
+        "B ": [["", "", "", "", "", "", ""], 20, [(9/18)*190, 69, 98]],
+        "B-": [["", "", "", "", "", "", ""], 20, [(8/18)*190, 68, 96]],
+        "C+": [["", "", "", "", "", "", ""], 20, [(7/18)*190, 66.5, 94]],
+        "C ": [["", "", "", "", "", "", ""], 20, [(6/18)*190, 65, 92]],
+        "C-": [["", "", "", "", "", "", ""], 20, [(5/18)*190, 65, 90]],
+        "D+": [["", "", "", "", "", "", ""], 20, [(4/18)*190, 50, 88]],
+        "D ": [["", "", "", "", "", "", ""], 20, [(3/18)*190, 50, 86]],
+        "D-": [["", "", "", "", "", "", ""], 20, [(2/18)*190, 50, 84]],
+        "E ": [["", "", "", "", "", "", ""], 20, [(1/18)*190, 50, 82]],
+        "F ": [["", "", "", "", "", "", ""], 20, [(0/18)*190, 50, 80]],
     }
     tableColumnHeadersHeight = 40
     tableColumnHeadersWidth = 40
@@ -150,23 +154,24 @@ function loadedPlayerData(data) {
     print(data["cardData"])
 
     let groupData = {
-        "S+": [[[], [], [], [], [], [], []], 14],
-        "S ": [[[], [], [], [], [], [], []], 14],
-        "S-": [[[], [], [], [], [], [], []], 14],
-        "A+": [[[], [], [], [], [], [], []], 14],
-        "A ": [[[], [], [], [], [], [], []], 14],
-        "A-": [[[], [], [], [], [], [], []], 14],
-        "B+": [[[], [], [], [], [], [], []], 14],
-        "B ": [[[], [], [], [], [], [], []], 14],
-        "B-": [[[], [], [], [], [], [], []], 14],
-        "C+": [[[], [], [], [], [], [], []], 14],
-        "C ": [[[], [], [], [], [], [], []], 14],
-        "C-": [[[], [], [], [], [], [], []], 14],
-        "D+": [[[], [], [], [], [], [], []], 14],
-        "D ": [[[], [], [], [], [], [], []], 14],
-        "D-": [[[], [], [], [], [], [], []], 14],
-        "E ": [[[], [], [], [], [], [], []], 14],
-        "F ": [[[], [], [], [], [], [], []], 14],
+        "SS": [[[], [], [], [], [], [], []], 20],
+        "S+": [[[], [], [], [], [], [], []], 20],
+        "S ": [[[], [], [], [], [], [], []], 20],
+        "S-": [[[], [], [], [], [], [], []], 20],
+        "A+": [[[], [], [], [], [], [], []], 20],
+        "A ": [[[], [], [], [], [], [], []], 20],
+        "A-": [[[], [], [], [], [], [], []], 20],
+        "B+": [[[], [], [], [], [], [], []], 20],
+        "B ": [[[], [], [], [], [], [], []], 20],
+        "B-": [[[], [], [], [], [], [], []], 20],
+        "C+": [[[], [], [], [], [], [], []], 20],
+        "C ": [[[], [], [], [], [], [], []], 20],
+        "C-": [[[], [], [], [], [], [], []], 20],
+        "D+": [[[], [], [], [], [], [], []], 20],
+        "D ": [[[], [], [], [], [], [], []], 20],
+        "D-": [[[], [], [], [], [], [], []], 20],
+        "E ": [[[], [], [], [], [], [], []], 20],
+        "F ": [[[], [], [], [], [], [], []], 20],
     }
     let cardNames = Object.keys(data)
     for (let cardName of cardNames) {
@@ -358,7 +363,7 @@ function draw() {
             // make a window for the popup screen
             rectMode(CORNER)
             fill(0, 0, 25)
-            rect(100, 100, 1300, 800)
+            rect(100, 100, 2000, 800)
 
             // display the card name. all "\n"s should be " "s
             textAlign(LEFT, TOP)
@@ -375,17 +380,16 @@ function draw() {
             let colorForGrade = table[grade][2]
 
             // display the rectangle
-            stroke(colorForGrade[0], colorForGrade[1], colorForGrade[2])
-            noFill()
-            rect(500, 210, 820, 52)
+            fill(colorForGrade[0], colorForGrade[1], colorForGrade[2], 10)
+            rect(500, 210, 1520, 50)
 
             noStroke()
 
             // display the grade and calibre
             fill(colorForGrade[0], colorForGrade[1], colorForGrade[2])
-            rect(505, 215, 42, 42)
+            rect(505, 214, 42, 42)
             fill(0, 0, 50)
-            rect(550, 215, 43, 42)
+            rect(550, 214, 43, 42)
             fill(0, 0, 25)
             textAlign(CENTER, CENTER)
             text(grade, 530, 233)
@@ -432,6 +436,10 @@ function draw() {
                 samplesPerFiftyXPosition = 100000
                 samplesPerFiftyXPositionInterpretation = "0.1M"
                 samplesPerHundredXPositionInterpretation = "0.2M"
+            } if (samples > 250000) {
+                samplesPerFiftyXPosition = 250000
+                samplesPerFiftyXPositionInterpretation = "0.25M"
+                samplesPerHundredXPositionInterpretation = "0.5M"
             }
 
             fill(0, 0, 100, 75)
@@ -445,6 +453,15 @@ function draw() {
             text("60%", 1075, 180)
             text("65%", 1175, 180)
             text("70%", 1275, 180)
+            text("-4σ", 1375, 180)
+            text("-3σ", 1450, 180)
+            text("-2σ", 1525, 180)
+            text("-1σ", 1600, 180)
+            text("0σ", 1675, 180)
+            text("1σ", 1750, 180)
+            text("2σ", 1825, 180)
+            text("3σ", 1900, 180)
+            text("4σ", 1975, 180)
             stroke(0, 0, 100, 75)
             strokeWeight(1)
             line(625, 190, 625, 900)
@@ -456,11 +473,20 @@ function draw() {
             line(1075, 190, 1075, 900)
             line(1175, 190, 1175, 900)
             line(1275, 190, 1275, 900)
+            line(1375, 190, 1375, 900)
+            line(1450, 190, 1450, 900)
+            line(1525, 190, 1525, 900)
+            line(1600, 190, 1600, 900)
+            line(1675, 190, 1675, 900)
+            line(1750, 190, 1750, 900)
+            line(1825, 190, 1825, 900)
+            line(1900, 190, 1900, 900)
+            line(1975, 190, 1975, 900)
 
             // display card data appropriately
             // display the dot for the samples
             stroke(0, 0, 100)
-            strokeWeight(5)
+            strokeWeight(6)
 
             point(625 + samples/(samplesPerFiftyXPosition/50), 235)
 
@@ -479,18 +505,24 @@ function draw() {
             }
 
             stroke(0, 0, 50)
-            strokeWeight(1)
+            strokeWeight(3)
             line(arrivingNumber.pos, 235, xPositionForWinrateMean, 235)
 
             stroke(0, 0, 100)
-            strokeWeight(5)
+            strokeWeight(6)
             point(xPositionForWinrate, 235)
 
             stroke(0, 0, 75)
-            strokeWeight(3)
+            strokeWeight(5)
             point(xPositionForWinrateMean, 235)
 
-            let yPos = 270
+            // display the dot for the zScore GIH
+            // starts at 0, gains 75 x position for every 1 z-score added
+            stroke(0, 0, 100)
+            strokeWeight(6)
+            point(1675 + cardData["zScoreGIH"]*75, 235)
+
+            let yPos = 260
 
             // now, iterate through each archetype
             for (let colorPair of [
@@ -531,17 +563,15 @@ function draw() {
                     colorForGrade = table[grade][2]
 
                     // display the rectangle
-                    stroke(colorForGrade[0], colorForGrade[1], colorForGrade[2])
-                    noFill()
-                    rect(500, yPos, 820, 52)
-
                     noStroke()
+                    fill(colorForGrade[0], colorForGrade[1], colorForGrade[2], 10)
+                    rect(500, yPos, 1520, 50)
 
                     // display the grade and calibre
                     fill(colorForGrade[0], colorForGrade[1], colorForGrade[2])
-                    rect(505, yPos + 5, 42, 42)
+                    rect(505, yPos + 4, 42, 42)
                     fill(0, 0, 50)
-                    rect(550, yPos + 5, 43, 42)
+                    rect(550, yPos + 4, 43, 42)
                     fill(0, 0, 25)
                     textAlign(CENTER, CENTER)
                     textSize(20)
@@ -556,7 +586,7 @@ function draw() {
                     // display card data appropriately
                     // display the dot for the samples
                     stroke(0, 0, 100)
-                    strokeWeight(5)
+                    strokeWeight(6)
 
                     point(625 + samples/(samplesPerFiftyXPosition/50), yPos + 25)
 
@@ -575,18 +605,23 @@ function draw() {
                     }
 
                     stroke(0, 0, 50)
-                    strokeWeight(1)
+                    strokeWeight(3)
                     line(arrivingNumber[colorPair].pos, yPos + 25, xPositionForWinrateMean, yPos + 25)
 
                     stroke(0, 0, 100)
-                    strokeWeight(5)
+                    strokeWeight(6)
                     point(xPositionForWinrate, yPos + 25)
 
                     stroke(0, 0, 75)
-                    strokeWeight(3)
+                    strokeWeight(5)
                     point(xPositionForWinrateMean, yPos + 25)
 
-                    yPos += 60
+                    // display the dot for the z-score
+                    stroke(0, 0, 100)
+                    strokeWeight(6)
+                    point(1675 + cardData["zScoreGIH"]*75, yPos + 25)
+
+                    yPos += 50
                 }
             }
 
@@ -636,7 +671,7 @@ function mousePressed() {
         if (miniIcon.isHovered()) {
             popupScreen = true
             cardForPopup = miniIcon
-            resizeCanvas(1500, 1000)
+            resizeCanvas(2200, 1000)
             print(popupScreen)
         }
     }
