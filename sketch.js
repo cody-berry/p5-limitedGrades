@@ -509,10 +509,15 @@ function draw() {
             // draw ticks for standard deviations
             stroke(0, 0, 50)
             strokeWeight(2)
-            for (let numStDevs = -3; numStDevs <= 4; numStDevs++) {
+            for (let numStDevs = -4; numStDevs <= 4; (numStDevs === -1 ? (numStDevs += 2) : (numStDevs++))) {
                 let winrateAtSpecifiedStandardDeviations = winrateMean + numStDevs*winrateStatistics["all"]["GIH WR"]["σ"]
-                let xPositionForWinrateAtStDevs = 775 + (winrateAtSpecifiedStandardDeviations-45)*(100/5)
-                line(xPositionForWinrateAtStDevs, 237, xPositionForWinrateAtStDevs, 233)
+                if ((winrateMean < winrateAtSpecifiedStandardDeviations &&
+                    winrateAtSpecifiedStandardDeviations < winrate) ||
+                    (winrate < winrateAtSpecifiedStandardDeviations &&
+                    winrateAtSpecifiedStandardDeviations < winrateMean)) {
+                    let xPositionForWinrateAtStDevs = 775 + (winrateAtSpecifiedStandardDeviations - 45) * (100 / 5)
+                    line(xPositionForWinrateAtStDevs, 230, xPositionForWinrateAtStDevs, 240)
+                }
             }
 
             let yPos = 260
@@ -610,12 +615,14 @@ function draw() {
                     // draw ticks for standard deviations
                     stroke(0, 0, 50)
                     strokeWeight(2)
-                    for (let numStDevs = -4; numStDevs <= 4; numStDevs++) {
+                    for (let numStDevs = -4; numStDevs <= 4; (numStDevs === -1 ? (numStDevs += 2) : (numStDevs++))) {
                         let winrateAtSpecifiedStandardDeviations = winrateMean + numStDevs*winrateStatistics[colorPair]["GIH WR"]["σ"]
-                        if (45 < winrateAtSpecifiedStandardDeviations &&
-                            winrateAtSpecifiedStandardDeviations < 70) {
+                        if ((winrateMean < winrateAtSpecifiedStandardDeviations &&
+                            winrateAtSpecifiedStandardDeviations < winrate) ||
+                            (winrate < winrateAtSpecifiedStandardDeviations &&
+                            winrateAtSpecifiedStandardDeviations < winrateMean)) {
                             let xPositionForWinrateAtStDevs = 775 + (winrateAtSpecifiedStandardDeviations - 45) * (100 / 5)
-                            line(xPositionForWinrateAtStDevs, yPos + 23, xPositionForWinrateAtStDevs, yPos + 27)
+                            line(xPositionForWinrateAtStDevs, yPos + 20, xPositionForWinrateAtStDevs, yPos + 30)
                         }
                     }
 
