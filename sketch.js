@@ -283,6 +283,8 @@ function setup() {
 function draw() {
     background(0, 0, 0)
 
+    cursor(ARROW)
+
     // loading screen?
     if (width === 500) {
         noFill()
@@ -461,17 +463,6 @@ function draw() {
             text("60%", 1075, 180)
             text("65%", 1175, 180)
             text("70%", 1275, 180)
-            stroke(0, 0, 100, 75)
-            strokeWeight(1)
-            line(625, 190, 625, 900)
-            line(675, 190, 675, 900)
-            line(725, 190, 725, 900)
-            line(775, 190, 775, 900)
-            line(875, 190, 875, 900)
-            line(975, 190, 975, 900)
-            line(1075, 190, 1075, 900)
-            line(1175, 190, 1175, 900)
-            line(1275, 190, 1275, 900)
 
             // display card data appropriately
             // display the dot for the samples
@@ -629,6 +620,18 @@ function draw() {
                     yPos += 50
                 }
             }
+
+            stroke(0, 0, 100, 75)
+            strokeWeight(1)
+            line(625, 190, 625, yPos + 25)
+            line(675, 190, 675, yPos + 25)
+            line(725, 190, 725, yPos + 25)
+            line(775, 190, 775, yPos + 25)
+            line(875, 190, 875, yPos + 25)
+            line(975, 190, 975, yPos + 25)
+            line(1075, 190, 1075, yPos + 25)
+            line(1175, 190, 1175, yPos + 25)
+            line(1275, 190, 1275, yPos + 25)
 
             noStroke()
         }

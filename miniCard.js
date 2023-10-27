@@ -54,6 +54,7 @@ class MiniCard {
                 image(this.hoverImage, this.posX, this.posY - 5 - (this.hoverImage.height)*(this.iconWidth/(this.hoverImage.width)), this.iconWidth, (this.hoverImage.height)*(this.iconWidth/(this.hoverImage.width)))
             else
                 image(this.hoverImage, this.posX, this.posY + this.iconHeight + 5, this.iconWidth, (this.hoverImage.height)*(this.iconWidth/(this.hoverImage.width))) // scale height properly
+            cursor(HAND)
         }
     }
 
