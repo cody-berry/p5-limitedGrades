@@ -375,6 +375,8 @@ function draw() {
             fill(0, 0, 25)
             rect(100, 100, width - 200, height - 200)
 
+            let dc = drawingContext
+
             // display the card name. all "\n"s should be " "s
             textAlign(LEFT, TOP)
             textSize(20)
@@ -382,8 +384,12 @@ function draw() {
             text(cardForPopup.cardName.replaceAll("\n", " "), 110, 110)
 
             // display the image
-            image(cardForPopup.hoverImage, 110, 110 + textAscent() + textDescent(), 300,
+            dc.shadowBlur = 10
+            dc.shadowColor = color(0, 0, 100)
+            image(cardForPopup.hoverImage, 110, 110, 300,
                 (cardForPopup.hoverImage.height)*(300/(cardForPopup.hoverImage.width))) // keep the same scale
+            dc.shadowBlur = 0
+            dc.shadowColor = 'rgba(0,0,0,0)'
 
             // find the grade and the color for the grade
             let grade = cardForPopup.grade
@@ -490,15 +496,13 @@ function draw() {
 
             print(minWinrate, maxWinrate, winrateTicks)
 
-            fill(0, 0, 100, 75)
+            fill(0, 0, 15)
             textSize(10)
             text("0", 625, 180)
             text(samplesPerFiftyXPositionInterpretation, 675, 180)
             text(samplesPerHundredXPositionInterpretation, 725, 180)
 
-
-
-            stroke(0, 0, 100, 75)
+            stroke(0, 0, 15)
             strokeWeight(1)
             line(625, 190, 625, 260 + availableColorPairs*50)
             line(675, 190, 675, 260 + availableColorPairs*50)
@@ -509,7 +513,7 @@ function draw() {
             for (let winrateTick of winrateTicks) {
                 noStroke()
                 text(winrateTick, xPos, 180)
-                stroke(0, 0, 100, 75)
+                stroke(0, 0, 15)
                 strokeWeight(1)
                 line(xPos, 190, xPos, 260 + availableColorPairs * 50)
 
