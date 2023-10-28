@@ -389,9 +389,9 @@ function draw() {
             let grade = cardForPopup.grade
             let colorForGrade = table[grade][2]
 
-            // display the rectangle
-            fill(colorForGrade[0], colorForGrade[1], colorForGrade[2], 10)
-            rect(480, 210, 820, 50)
+            // // display the rectangle
+            // fill(colorForGrade[0], colorForGrade[1], colorForGrade[2], 10)
+            // rect(480, 210, 820, 50)
 
             noStroke()
 
@@ -414,55 +414,107 @@ function draw() {
             let winrate = parseFloat(cardData["GIH WR"].substring(0, cardData["GIH" +
             " WR"].length - 1))
             let winrateMean = winrateStatistics["all"]["GIH WR"]["μ"]
-            if (samples > 2400) {
+            if (samples > 3000) {
                 samplesPerFiftyXPosition = 2000
                 samplesPerFiftyXPositionInterpretation = "2K"
                 samplesPerHundredXPositionInterpretation = "4K"
-            } if (samples > 5000) {
+            } if (samples > 6000) {
                 samplesPerFiftyXPosition = 5000
                 samplesPerFiftyXPositionInterpretation = "5K"
                 samplesPerHundredXPositionInterpretation = "10K"
-            }if (samples > 12000) {
+            }if (samples > 15000) {
                 samplesPerFiftyXPosition = 10000
                 samplesPerFiftyXPositionInterpretation = "10K"
                 samplesPerHundredXPositionInterpretation = "20K"
-            } if (samples > 24000) {
+            } if (samples > 30000) {
                 samplesPerFiftyXPosition = 20000
                 samplesPerFiftyXPositionInterpretation = "20K"
                 samplesPerHundredXPositionInterpretation = "40K"
-            } if (samples > 45000) {
-                samplesPerFiftyXPosition = 25000
-                samplesPerFiftyXPositionInterpretation = "25K"
-                samplesPerHundredXPositionInterpretation = "50K"
             } if (samples > 60000) {
                 samplesPerFiftyXPosition = 40000
                 samplesPerFiftyXPositionInterpretation = "40K"
                 samplesPerHundredXPositionInterpretation = "80K"
-            } if (samples > 90000) {
-                samplesPerFiftyXPosition = 60000
-                samplesPerFiftyXPositionInterpretation = "60K"
-                samplesPerHundredXPositionInterpretation = "0.12M"
-            } if (samples > 130000) {
+            } if (samples > 120000) {
                 samplesPerFiftyXPosition = 100000
                 samplesPerFiftyXPositionInterpretation = "0.1M"
                 samplesPerHundredXPositionInterpretation = "0.2M"
-            } if (samples > 250000) {
+            } if (samples > 300000) {
                 samplesPerFiftyXPosition = 250000
                 samplesPerFiftyXPositionInterpretation = "0.25M"
                 samplesPerHundredXPositionInterpretation = "0.5M"
+            }if (samples > 750000) {
+                samplesPerFiftyXPosition = 1000000
+                samplesPerFiftyXPositionInterpretation = "1M"
+                samplesPerHundredXPositionInterpretation = "2M"
             }
+
+            let availableColorPairs = 0
+            let minWinrate = 100
+            let maxWinrate = 0
+            for (let colorPair of [
+                "all",
+                "WU", "UB", "BR", "RG", "WG",
+                "WB", "BG", "UG", "UR", "WR"
+            ]) {
+                if (data[cardForPopup.cardName.replaceAll("\n", " ")][colorPair]["GIH WR"]) {
+                    availableColorPairs += 1
+                    let winrateForColorPair = parseFloat(data[cardForPopup.cardName.replaceAll("\n", " ")][colorPair]["GIH WR"].substring(
+                        0, data[cardForPopup.cardName.replaceAll("\n", " ")][colorPair]["GIH WR"].length - 1
+                    ))
+                    if (winrateForColorPair < minWinrate) {
+                        minWinrate = winrateForColorPair
+                    } if (winrateForColorPair > maxWinrate) {
+                        maxWinrate = winrateForColorPair
+                    }
+                    let winrateMeanForColorPair = winrateStatistics[colorPair]["GIH WR"]["μ"]
+                    if (winrateMeanForColorPair < minWinrate) {
+                        minWinrate = winrateMeanForColorPair
+                    } if (winrateMeanForColorPair > maxWinrate) {
+                        maxWinrate = winrateMeanForColorPair
+                    }
+                }
+            }
+            let winrateTicks = []
+            let firstWinrateTick = 0
+            for (let i = 0; i < 100; i += 5) {
+                if (
+                    i + 4.5 > minWinrate &&
+                    i - 4.5 < maxWinrate
+                ) {
+                    if (winrateTicks.length === 0) {
+                        firstWinrateTick = i
+                    }
+                    winrateTicks.push(i + "%")
+                }
+            }
+
+            print(minWinrate, maxWinrate, winrateTicks)
 
             fill(0, 0, 100, 75)
             textSize(10)
             text("0", 625, 180)
             text(samplesPerFiftyXPositionInterpretation, 675, 180)
             text(samplesPerHundredXPositionInterpretation, 725, 180)
-            text("45%", 775, 180)
-            text("50%", 875, 180)
-            text("55%", 975, 180)
-            text("60%", 1075, 180)
-            text("65%", 1175, 180)
-            text("70%", 1275, 180)
+
+
+
+            stroke(0, 0, 100, 75)
+            strokeWeight(1)
+            line(625, 190, 625, 260 + availableColorPairs*50)
+            line(675, 190, 675, 260 + availableColorPairs*50)
+            line(725, 190, 725, 260 + availableColorPairs*50)
+
+
+            let xPos = 775
+            for (let winrateTick of winrateTicks) {
+                noStroke()
+                text(winrateTick, xPos, 180)
+                stroke(0, 0, 100, 75)
+                strokeWeight(1)
+                line(xPos, 190, xPos, 260 + availableColorPairs * 50)
+
+                xPos += 100
+            }
 
             // display card data appropriately
             // display the dot for the samples
@@ -472,9 +524,9 @@ function draw() {
             point(625 + samples/(samplesPerFiftyXPosition/50), 235)
 
             // display the dot for the GIH WR mean
-            // starts at 45, gains 100 x position for every 5 WR added
-            let xPositionForWinrate = 775 + (winrate-45)*(100/5)
-            let xPositionForWinrateMean = 775 + (winrateMean-45)*(100/5)
+            // starts at firstWinrateTick, gains 100 x position for every 5 WR added
+            let xPositionForWinrate = 775 + (winrate-firstWinrateTick)*(100/5)
+            let xPositionForWinrateMean = 775 + (winrateMean-firstWinrateTick)*(100/5)
 
             if (arrivingNumber) {
                 arrivingNumber.arrive()
@@ -506,7 +558,7 @@ function draw() {
                     winrateAtSpecifiedStandardDeviations < winrate) ||
                     (winrate < winrateAtSpecifiedStandardDeviations &&
                     winrateAtSpecifiedStandardDeviations < winrateMean)) {
-                    let xPositionForWinrateAtStDevs = 775 + (winrateAtSpecifiedStandardDeviations - 45) * (100 / 5)
+                    let xPositionForWinrateAtStDevs = 775 + (winrateAtSpecifiedStandardDeviations - firstWinrateTick) * (100 / 5)
                     line(xPositionForWinrateAtStDevs, 230, xPositionForWinrateAtStDevs, 240)
                 }
             }
@@ -553,8 +605,8 @@ function draw() {
 
                     // display the rectangle
                     noStroke()
-                    fill(colorForGrade[0], colorForGrade[1], colorForGrade[2], 10)
-                    rect(480, yPos, 820, 50)
+                    // fill(colorForGrade[0], colorForGrade[1], colorForGrade[2], 10)
+                    // rect(480, yPos, 820, 50)
 
                     // display the grade and calibre
                     fill(colorForGrade[0], colorForGrade[1], colorForGrade[2])
@@ -578,9 +630,9 @@ function draw() {
                     point(625 + samples/(samplesPerFiftyXPosition/50), yPos + 25)
 
                     // display the dot for the GIH WR mean
-                    // starts at 45, gains 100 x position for every 5 WR added
-                    let xPositionForWinrate = 775 + (winrate-45)*(100/5)
-                    let xPositionForWinrateMean = 775 + (winrateMean-45)*(100/5)
+                    // starts at firstWinrateTick, gains 100 x position for every 5 WR added
+                    let xPositionForWinrate = 775 + (winrate-firstWinrateTick)*(100/5)
+                    let xPositionForWinrateMean = 775 + (winrateMean-firstWinrateTick)*(100/5)
 
                     if (arrivingNumber[colorPair]) {
                         arrivingNumber[colorPair].arrive()
@@ -612,7 +664,7 @@ function draw() {
                             winrateAtSpecifiedStandardDeviations < winrate) ||
                             (winrate < winrateAtSpecifiedStandardDeviations &&
                             winrateAtSpecifiedStandardDeviations < winrateMean)) {
-                            let xPositionForWinrateAtStDevs = 775 + (winrateAtSpecifiedStandardDeviations - 45) * (100 / 5)
+                            let xPositionForWinrateAtStDevs = 775 + (winrateAtSpecifiedStandardDeviations - firstWinrateTick) * (100 / 5)
                             line(xPositionForWinrateAtStDevs, yPos + 20, xPositionForWinrateAtStDevs, yPos + 30)
                         }
                     }
@@ -620,18 +672,6 @@ function draw() {
                     yPos += 50
                 }
             }
-
-            stroke(0, 0, 100, 75)
-            strokeWeight(1)
-            line(625, 190, 625, yPos + 25)
-            line(675, 190, 675, yPos + 25)
-            line(725, 190, 725, yPos + 25)
-            line(775, 190, 775, yPos + 25)
-            line(875, 190, 875, yPos + 25)
-            line(975, 190, 975, yPos + 25)
-            line(1075, 190, 1075, yPos + 25)
-            line(1175, 190, 1175, yPos + 25)
-            line(1275, 190, 1275, yPos + 25)
 
             noStroke()
         }
@@ -664,7 +704,6 @@ function displayManaSymbol(color, x, y) {
     }
 
     imageMode(CENTER)
-    print(manaSymbol.width, manaSymbol.height)
     image(manaSymbol, x, y)
     imageMode(CORNER)
 }
