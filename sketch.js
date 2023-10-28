@@ -373,7 +373,7 @@ function draw() {
             // make a window for the popup screen
             rectMode(CORNER)
             fill(0, 0, 25)
-            rect(100, 100, 1320, 800)
+            rect(100, 100, width - 200, height - 200)
 
             // display the card name. all "\n"s should be " "s
             textAlign(LEFT, TOP)
@@ -514,6 +514,10 @@ function draw() {
                 line(xPos, 190, xPos, 260 + availableColorPairs * 50)
 
                 xPos += 100
+            }
+
+            if (width !== xPos + 150) {
+                resizeCanvas(xPos + 150, 1000)
             }
 
             // display card data appropriately
