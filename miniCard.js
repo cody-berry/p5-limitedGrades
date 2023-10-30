@@ -25,7 +25,7 @@ class MiniCard {
     }
 
     display() {
-        textSize(18)
+        textSize(15)
         fill(0, 0, 0, 50)
         rect(this.posX, this.posY, this.iconWidth, this.iconHeight)
         fill(0, 0, 100)
@@ -38,10 +38,10 @@ class MiniCard {
             let posY = this.posY + textAscent() + textDescent()/2
             for (let line of lines) {
                 rect(this.posX + 10, posY - 2, textWidth(line), textDescent() / 4)
-                posY += 22
+                posY += 19
             }
         }
-        text(this.cardName, this.posX + 10, this.posY - 2)
+        text(this.cardName, this.posX + 10, this.posY)
         fill(this.iconColor[0], this.iconColor[1], this.iconColor[2])
         rect(this.posX, this.posY, 3, this.iconHeight)
     }

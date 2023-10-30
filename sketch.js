@@ -42,41 +42,41 @@ function calculateGrade(zScore) {
 
     // special: S
     if (zScore > 3.25)
-        result = "S "
+        result = "S"
     // A range
     else if (zScore > (2.5 - 1 / 3))
         result = "A+"
     else if (zScore > (1.5 + 1 / 3))
-        result = "A "
+        result = "A"
     else if (zScore > 1.5)
         result = "A-"
     // B range
     else if (zScore > (1.5 - 1 / 3))
         result = "B+"
     else if (zScore > (0.5 + 1 / 3))
-        result = "B "
+        result = "B"
     else if (zScore > 0.5)
         result = "B-"
     // C range
     else if (zScore > (0.5 - 1 / 3))
         result = "C+"
     else if (zScore > (-0.5 + 1 / 3))
-        result = "C "
+        result = "C"
     else if (zScore > -0.5)
         result = "C-"
     // D range
     else if (zScore > (-0.5 - 1 / 3))
         result = "D+"
     else if (zScore > (-1.5 + 1 / 3))
-        result = "D "
+        result = "D"
     else if (zScore > -1.5)
         result = "D-"
     // E range
     else if (zScore > -2)
-        result = "E "
+        result = "E"
     // F range
     else
-        result = "F "
+        result = "F"
 
     return result
 }
@@ -86,21 +86,21 @@ function preload() {
     fixedWidthFont = loadFont('data/consola.ttf')
     variableWidthFont = loadFont('data/meiryo.ttf')
     table = {
-        "S ": [["", "", "", "", "", "", ""], 20, [120, 100, 100]],
+        "S": [["", "", "", "", "", "", ""], 20, [120, 100, 100]],
         "A+": [["", "", "", "", "", "", ""], 20, [110, 60, 100]],
-        "A ": [["", "", "", "", "", "", ""], 20, [105, 60, 100]],
+        "A": [["", "", "", "", "", "", ""], 20, [105, 60, 100]],
         "A-": [["", "", "", "", "", "", ""], 20, [100, 60, 100]],
         "B+": [["", "", "", "", "", "", ""], 20, [90, 60, 100]],
-        "B ": [["", "", "", "", "", "", ""], 20, [80, 60, 98]],
+        "B": [["", "", "", "", "", "", ""], 20, [80, 60, 98]],
         "B-": [["", "", "", "", "", "", ""], 20, [70, 60, 96]],
         "C+": [["", "", "", "", "", "", ""], 20, [60, 60, 94]],
-        "C ": [["", "", "", "", "", "", ""], 20, [50, 60, 92]],
+        "C": [["", "", "", "", "", "", ""], 20, [50, 60, 92]],
         "C-": [["", "", "", "", "", "", ""], 20, [40, 60, 90]],
         "D+": [["", "", "", "", "", "", ""], 20, [30, 50, 88]],
-        "D ": [["", "", "", "", "", "", ""], 20, [20, 50, 86]],
+        "D": [["", "", "", "", "", "", ""], 20, [20, 50, 86]],
         "D-": [["", "", "", "", "", "", ""], 20, [10, 50, 84]],
-        "E ": [["", "", "", "", "", "", ""], 20, [5, 50, 82]],
-        "F ": [["", "", "", "", "", "", ""], 20, [0, 50, 80]],
+        "E": [["", "", "", "", "", "", ""], 20, [5, 50, 82]],
+        "F": [["", "", "", "", "", "", ""], 20, [0, 50, 80]],
     }
     tableColumnHeadersHeight = 40
     tableColumnHeadersWidth = 40
@@ -120,7 +120,7 @@ function preload() {
         loadImage("WUBRG/R.png"),
         loadImage("WUBRG/G.png"),
     ]
-    tableColumnWidth = (1750-tableColumnHeadersWidth)/(tableColumnHeaders.length)
+    tableColumnWidth = (1500-tableColumnHeadersWidth)/(tableColumnHeaders.length)
     winrateStatistics = loadJSON("json/statistics.json")
 }
 
@@ -152,21 +152,21 @@ function loadedPlayerData(data) {
     print(data["cardData"])
 
     let groupData = {
-        "S ": [[[], [], [], [], [], [], []], 20],
+        "S": [[[], [], [], [], [], [], []], 20],
         "A+": [[[], [], [], [], [], [], []], 20],
-        "A ": [[[], [], [], [], [], [], []], 20],
+        "A": [[[], [], [], [], [], [], []], 20],
         "A-": [[[], [], [], [], [], [], []], 20],
         "B+": [[[], [], [], [], [], [], []], 20],
-        "B ": [[[], [], [], [], [], [], []], 20],
+        "B": [[[], [], [], [], [], [], []], 20],
         "B-": [[[], [], [], [], [], [], []], 20],
         "C+": [[[], [], [], [], [], [], []], 20],
-        "C ": [[[], [], [], [], [], [], []], 20],
+        "C": [[[], [], [], [], [], [], []], 20],
         "C-": [[[], [], [], [], [], [], []], 20],
         "D+": [[[], [], [], [], [], [], []], 20],
-        "D ": [[[], [], [], [], [], [], []], 20],
+        "D": [[[], [], [], [], [], [], []], 20],
         "D-": [[[], [], [], [], [], [], []], 20],
-        "E ": [[[], [], [], [], [], [], []], 20],
-        "F ": [[[], [], [], [], [], [], []], 20],
+        "E": [[[], [], [], [], [], [], []], 20],
+        "F": [[[], [], [], [], [], [], []], 20],
     }
     let cardNames = Object.keys(data)
     for (let cardName of cardNames) {
@@ -219,9 +219,9 @@ function loadedPlayerData(data) {
             let posY = posYAtStartOfGrade + 2
             for (let card of cardsInColor) {
                 let cardIconWidth = tableColumnWidth - 14
-                let wrappedCardName = wordWrap(card[0], 18, cardIconWidth)
+                let wrappedCardName = wordWrap(card[0], 15, cardIconWidth)
                 let numNewlines = wrappedCardName.split("\n").length - 1
-                let additionalHeightTaken = numNewlines*22
+                let additionalHeightTaken = numNewlines*19
                 miniCardIcons.push(
                     new MiniCard(wrappedCardName, card[1], posX + 2, posY + 2, tableColumnWidth - 4, 20 + additionalHeightTaken, card[2], grade)
                 )
@@ -238,7 +238,7 @@ function loadedPlayerData(data) {
         posYAtStartOfGrade += height
     }
 
-    resizeCanvas(1750, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
+    resizeCanvas(1500, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
 }
 
 function sum(arr) {
@@ -323,11 +323,13 @@ function draw() {
                 stroke(table[rowHeader][2][0], table[rowHeader][2][1], table[rowHeader][2][2])
                 strokeWeight(4)
                 line(2, posY, 2, table[rowHeader][1] + posY)
-                noStroke()
+                stroke(0, 0, 100)
+                strokeWeight(2)
                 fill(0, 0, 100)
-                textSize(16)
+                textSize(19)
                 textAlign(CENTER, CENTER)
-                text(rowHeader, tableColumnHeadersWidth / 2, posY + table[rowHeader][1] / 2)
+                text(rowHeader, tableColumnHeadersWidth / 2, posY + table[rowHeader][1] / 2 - 3)
+                noStroke()
                 // switch to corner text
                 textAlign(LEFT, TOP)
                 textSize(14)
@@ -751,7 +753,7 @@ function mousePressed() {
                 "UR": null,
                 "WR": null
             }
-            resizeCanvas(1750, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
+            resizeCanvas(1500, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
         }
             return
     }
