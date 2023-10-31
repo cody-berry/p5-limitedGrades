@@ -340,13 +340,10 @@ function draw() {
             // black rectangle with "HEADERS" on it
             fill(0, 0, 0)
             noStroke()
-            rect(1, topOfWindow + 2, tableColumnHeadersWidth - 2, tableColumnHeadersHeight - 4)
+            if (window.scrollY - 10 < 0) {
+                rect(0, topOfWindow, tableColumnHeadersWidth, tableColumnHeadersHeight)
+            }
             textAlign(CENTER, CENTER)
-            fill(0, 0, 100)
-            textSize(10)
-            text("HEADERS", tableColumnHeadersWidth / 2, topOfWindow + tableColumnHeadersHeight / 2)
-            textSize(14)
-            fill(0, 0, 0)
 
             let posX = tableColumnHeadersWidth
 
@@ -355,7 +352,7 @@ function draw() {
 
             // display column header images
             for (let columnHeader of tableColumnHeaders) {
-                rect(1 + posX, topOfWindow + 2, tableColumnWidth - 2, tableColumnHeadersHeight - 4)
+                rect(posX - 1, topOfWindow, tableColumnWidth, tableColumnHeadersHeight)
                 image(columnHeader, posX + tableColumnWidth / 2, topOfWindow + tableColumnHeadersHeight / 2)
                 posX += tableColumnWidth
             }
@@ -379,6 +376,7 @@ function draw() {
             // display the image
             dc.shadowBlur = 30
             dc.shadowColor = color(0, 0, 100)
+            imageMode(CORNER)
             image(cardForPopup.hoverImage, 145, 145, 300,
                 (cardForPopup.hoverImage.height)*(300/(cardForPopup.hoverImage.width))) // keep the same scale
             dc.shadowBlur = 0
