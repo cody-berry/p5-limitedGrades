@@ -291,29 +291,6 @@ function draw() {
     else {
         if (!popupScreen) {
             background(0, 0, 30)
-            // display top-left cell
-            // black rectangle with "HEADERS" on it
-            fill(0, 0, 0)
-            noStroke()
-            rect(1, 2, tableColumnHeadersWidth - 2, tableColumnHeadersHeight - 4)
-            textAlign(CENTER, CENTER)
-            fill(0, 0, 100)
-            textSize(10)
-            text("HEADERS", tableColumnHeadersWidth / 2, tableColumnHeadersHeight / 2)
-            textSize(14)
-            fill(0, 0, 0)
-
-            let posX = tableColumnHeadersWidth
-
-            rectMode(CORNER)
-            imageMode(CENTER)
-
-            // display column header images
-            for (let columnHeader of tableColumnHeaders) {
-                rect(1 + posX, 2, tableColumnWidth - 2, tableColumnHeadersHeight - 4)
-                image(columnHeader, posX + tableColumnWidth / 2, tableColumnHeadersHeight / 2)
-                posX += tableColumnWidth
-            }
 
             // display row headers and elements
             let posY = tableColumnHeadersHeight
@@ -334,7 +311,7 @@ function draw() {
                 textAlign(LEFT, TOP)
                 textSize(14)
                 fill(0, 0, 17)
-                posX = tableColumnHeadersWidth
+                let posX = tableColumnHeadersWidth
                 for (let element of table[rowHeader][0]) {
                     rect(1 + posX, 2 + posY, tableColumnWidth - 2, table[rowHeader][1] - 4)
                     fill(0, 0, 17)
@@ -354,6 +331,33 @@ function draw() {
             // display all the mini card icons
             for (let miniIcon of miniCardIcons) {
                 miniIcon.displayHoverImage()
+            }
+
+            // find the top of the window
+            let topOfWindow = max(window.scrollY - 10, 0)
+
+            // display top-left cell
+            // black rectangle with "HEADERS" on it
+            fill(0, 0, 0)
+            noStroke()
+            rect(1, topOfWindow + 2, tableColumnHeadersWidth - 2, tableColumnHeadersHeight - 4)
+            textAlign(CENTER, CENTER)
+            fill(0, 0, 100)
+            textSize(10)
+            text("HEADERS", tableColumnHeadersWidth / 2, topOfWindow + tableColumnHeadersHeight / 2)
+            textSize(14)
+            fill(0, 0, 0)
+
+            let posX = tableColumnHeadersWidth
+
+            rectMode(CORNER)
+            imageMode(CENTER)
+
+            // display column header images
+            for (let columnHeader of tableColumnHeaders) {
+                rect(1 + posX, topOfWindow + 2, tableColumnWidth - 2, tableColumnHeadersHeight - 4)
+                image(columnHeader, posX + tableColumnWidth / 2, topOfWindow + tableColumnHeadersHeight / 2)
+                posX += tableColumnWidth
             }
         }
 
