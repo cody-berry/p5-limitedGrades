@@ -16,6 +16,7 @@ class MiniCard {
         onImage = true
         this.hoverImage = loadImage(imageURL)
         this.grade = grade
+        this.textColorOrangeness = new ArrivingNumber(35, 50)
         print(this.cardName)
         print(this.cardRarity)
         print(this.posX)
@@ -33,14 +34,22 @@ class MiniCard {
             mouseX < this.posX + this.iconWidth &&
             mouseY > this.posY &&
             mouseY < this.posY + this.iconHeight) {
-            fill(35, 100, 100)
-            let lines = this.cardName.split("\n")
-            let posY = this.posY + textAscent() + textDescent()/2
-            for (let line of lines) {
-                rect(this.posX + 10, posY - 2, textWidth(line), textDescent() / 4)
-                posY += 19
-            }
+            this.textColorOrangeness.target = 100
+            this.textColorOrangeness.arrive()
+            this.textColorOrangeness.update()
+        } else {
+            this.textColorOrangeness.target = 0
+            this.textColorOrangeness.arrive()
+            this.textColorOrangeness.update()
         }
+        fill(35, this.textColorOrangeness.pos, 100, this.textColorOrangeness.pos)
+        let lines = this.cardName.split("\n")
+        let posY = this.posY + textAscent() + textDescent()/2
+        for (let line of lines) {
+            rect(this.posX + 10, posY - 2, textWidth(line), textDescent() / 4)
+            posY += 19
+        }
+        fill(35, this.textColorOrangeness.pos, 100)
         text(this.cardName, this.posX + 10, this.posY)
         fill(this.iconColor[0], this.iconColor[1], this.iconColor[2])
         rect(this.posX, this.posY, 3, this.iconHeight)

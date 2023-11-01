@@ -10,7 +10,7 @@ let variableWidthFont
 let instructions
 let debugCorner /* output debug text in the bottom left corner of the canvas */
 
-let table /* just for experimenting */
+let table
 let tableColumnHeaders
 let tableColumnHeadersHeight
 let tableColumnWidth
@@ -21,6 +21,7 @@ let cnv
 let popupScreen = false
 let cardForPopup = null
 let onImage = false
+let backgroundColorForPopupScreen = 0
 let arrivingNumber
 let arrivingNumbersForColorPairs = {
     "WU": null,
@@ -105,13 +106,13 @@ function preload() {
     tableColumnHeadersHeight = 40
     tableColumnHeadersWidth = 40
     tableColumnHeaders = [
-        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159112758273523793/image.png?ex=651eb360&is=651d61e0&hm=831a23d41e7452e0630274aaed65093869b9256cc4b033da31e23e2acdbe075d&"),
-        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159112877949603840/image.png?ex=651eb37d&is=651d61fd&hm=4d18565da1053670066ce18a7ec4c23a6f3432ba9cc995b0df21373c0189ffba&"),
-        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159112935692574770/image.png?ex=651eb38b&is=651d620b&hm=579de7da0e1b9fbeb05f5afbd1a91ecb1221a1f3e0efd27c5648cd7006cd0d30&"),
-        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159112961781157888/image.png?ex=651eb391&is=651d6211&hm=4a6bc55ac68b3c7022a10f906f75898c7958bca646104c0c59243460b80c9070&"),
-        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159112990205935697/image.png?ex=651eb398&is=651d6218&hm=3db33cb8c9ed7541f2fb6d995f1c3b6a1bb95ccb75f062ad298e079d0657bcc4&"),
-        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159113064193462293/image.png?ex=651eb3a9&is=651d6229&hm=9be9257233b621639107550717f7387a72965679c5853577398e04cfeb98eb2f&"),
-        loadImage("https://cdn.discordapp.com/attachments/1157119224263741481/1159113092282724432/image.png?ex=651eb3b0&is=651d6230&hm=bc388c75d916ed1aacc60f4951fcab0a2359e762d9db0d2a6be7a2150da1032f&"),
+        loadImage("WUBRG/W.png"),
+        loadImage("WUBRG/U.png"),
+        loadImage("WUBRG/B.png"),
+        loadImage("WUBRG/R.png"),
+        loadImage("WUBRG/G.png"),
+        loadImage("WUBRG/M.png"),
+        loadImage("WUBRG/C.png"),
     ]
     WUBRG = [
         loadImage("WUBRG/W.png"),
@@ -290,16 +291,16 @@ function draw() {
     }
     else {
         if (!popupScreen) {
-            background(0, 0, 30)
+            background(0, 0, 0)
 
             // display row headers and elements
             let posY = tableColumnHeadersHeight
             for (let rowHeader in table) {
                 // displaying row header with centered text
-                rect(1, 2 + posY, tableColumnHeadersWidth - 2, table[rowHeader][1] - 4)
-                stroke(table[rowHeader][2][0], table[rowHeader][2][1], table[rowHeader][2][2])
-                strokeWeight(4)
-                line(2, posY, 2, table[rowHeader][1] + posY)
+                fill(0, 0, 25)
+                rect(0, 1 + posY, tableColumnHeadersWidth, table[rowHeader][1] - 2)
+                fill(table[rowHeader][2][0], table[rowHeader][2][1], table[rowHeader][2][2])
+                rect(0, posY + 1, 4, table[rowHeader][1] - 2)
                 stroke(0, 0, 100)
                 strokeWeight(2)
                 fill(0, 0, 100)
@@ -313,8 +314,7 @@ function draw() {
                 fill(0, 0, 17)
                 let posX = tableColumnHeadersWidth
                 for (let element of table[rowHeader][0]) {
-                    rect(1 + posX, 2 + posY, tableColumnWidth - 2, table[rowHeader][1] - 4)
-                    fill(0, 0, 17)
+                    rect(posX, 1 + posY, tableColumnWidth + 1, table[rowHeader][1] - 2)
                     posX += tableColumnWidth
                 }
                 textSize(14)
@@ -336,13 +336,11 @@ function draw() {
             // find the top of the window
             let topOfWindow = max(window.scrollY - 10, 0)
 
-            // display top-left cell
-            // black rectangle with "HEADERS" on it
-            fill(0, 0, 0)
+            // display top-left cell and column headers
+            fill(0, 0, 25)
             noStroke()
-            if (window.scrollY - 10 < 0) {
-                rect(0, topOfWindow, tableColumnHeadersWidth, tableColumnHeadersHeight)
-            }
+            rect(0, 0, 4, tableColumnHeadersHeight)
+            rect(4, topOfWindow - 2, tableColumnHeadersWidth, tableColumnHeadersHeight)
             textAlign(CENTER, CENTER)
 
             let posX = tableColumnHeadersWidth
@@ -352,7 +350,7 @@ function draw() {
 
             // display column header images
             for (let columnHeader of tableColumnHeaders) {
-                rect(posX - 1, topOfWindow, tableColumnWidth, tableColumnHeadersHeight)
+                rect(posX - 1, topOfWindow - 2, tableColumnWidth + 1, tableColumnHeadersHeight)
                 image(columnHeader, posX + tableColumnWidth / 2, topOfWindow + tableColumnHeadersHeight / 2)
                 posX += tableColumnWidth
             }
@@ -360,10 +358,39 @@ function draw() {
 
         // make the popup screen
         if (popupScreen) {
+            // make a button for "click to exit"
+            if (
+                (mouseX < 100 &&
+                    mouseX > 0) ||
+                (mouseY < 100 &&
+                    mouseY > 0) ||
+                (mouseX > width - 100 &&
+                    mouseX < width) ||
+                (mouseY > height - 100 &&
+                    mouseY < height)
+            ) {
+                if (backgroundColorForPopupScreen < 10)
+                    backgroundColorForPopupScreen += 0.7
+                cursor(HAND)
+            } else {
+                cursor(ARROW)
+                if (backgroundColorForPopupScreen > 0)
+                    backgroundColorForPopupScreen -= 0.7
+            }
+            background(0, 0, backgroundColorForPopupScreen)
+
+            textAlign(CENTER, CENTER)
+            fill(0, 0, 40)
+            textSize(30)
+            text("CLICK TO EXIT", width/2, height - 55)
+            text("CLICK TO EXIT", width/2, 55)
+
             // make a window for the popup screen
             rectMode(CORNER)
             fill(0, 0, 25)
             rect(100, 100, width - 200, height - 200)
+
+
 
             let dc = drawingContext
 
