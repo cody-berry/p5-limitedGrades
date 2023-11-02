@@ -39,7 +39,7 @@ let winrateStatistics
 let WUBRG
 
 function calculateGrade(zScore) {
-    let result = "  "  // use this as extra spacing
+    let result
 
     // special: S
     if (zScore > 3.25)
@@ -104,7 +104,7 @@ function preload() {
         "F": [["", "", "", "", "", "", ""], 20, [0, 70, 80]],
     }
     tableColumnHeadersHeight = 40
-    tableColumnHeadersWidth = 40
+    tableColumnHeadersWidth = 70
     tableColumnHeaders = [
         loadImage("WUBRG/W.png"),
         loadImage("WUBRG/U.png"),
@@ -420,7 +420,7 @@ function draw() {
             noStroke()
 
             // display the grade and calibre
-            fill(0, 0, 50)
+            fill(0, 0, 100, 5)
             rect(490, 214, 42, 42, 5)
             fill(0, 0, 25)
             rect(542, 220, 56, 30)
@@ -653,7 +653,7 @@ function draw() {
                     // rect(480, yPos, 820, 50)
 
                     // display the grade and calibre
-                    fill(0, 0, 50)
+                    fill(0, 0, 100, 10)
                     rect(490, yPos + 4, 42, 42, 5)
                     fill(0, 0, 25)
                     textAlign(CENTER, CENTER)
