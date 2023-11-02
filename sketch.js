@@ -88,10 +88,10 @@ function preload() {
     variableWidthFont = loadFont('data/meiryo.ttf')
     table = {
         "S": [["", "", "", "", "", "", ""], 20, [120, 100, 80]],
-        "A+": [["", "", "", "", "", "", ""], 20, [110, 60, 80]],
-        "A": [["", "", "", "", "", "", ""], 20, [105, 58, 80]],
-        "A-": [["", "", "", "", "", "", ""], 20, [100, 56, 80]],
-        "B+": [["", "", "", "", "", "", ""], 20, [90, 54, 80]],
+        "A+": [["", "", "", "", "", "", ""], 20, [110, 50, 80]],
+        "A": [["", "", "", "", "", "", ""], 20, [105, 50, 80]],
+        "A-": [["", "", "", "", "", "", ""], 20, [100, 50, 80]],
+        "B+": [["", "", "", "", "", "", ""], 20, [90, 50, 80]],
         "B": [["", "", "", "", "", "", ""], 20, [80, 52, 80]],
         "B-": [["", "", "", "", "", "", ""], 20, [70, 54, 80]],
         "C+": [["", "", "", "", "", "", ""], 20, [60, 56, 80]],
@@ -193,7 +193,7 @@ function loadedPlayerData(data) {
             print(color)
 
             groupData[grade][0][tableIndex].push(
-                [cardName, data[cardName]["rarity"], data[cardName]["all"]["url"]]
+                [cardName, data[cardName]["rarity"], data[cardName]["all"]["url"], data[cardName]["all"]["GIH WR"]]
             )
 
             // figure out how large the block should be
@@ -211,12 +211,14 @@ function loadedPlayerData(data) {
     // make the mini card icon list
     let posYAtStartOfGrade = tableColumnHeadersHeight
     for (let grade in groupData) {
+
         let gradeData = groupData[grade]
         let posX = tableColumnHeadersWidth
         let height = groupData[grade][1]
         let colorGroupedCards = groupData[grade][0]
 
         for (let cardsInColor of colorGroupedCards) {
+            cardsInColor.sort(sortByWinrates)
             let posY = posYAtStartOfGrade + 2
             for (let card of cardsInColor) {
                 let cardIconWidth = tableColumnWidth - 14
@@ -240,6 +242,10 @@ function loadedPlayerData(data) {
     }
 
     resizeCanvas(1500, sum(Object.keys(table).map(key => table[key][1])) + tableColumnHeadersHeight + 2)
+}
+
+function sortByWinrates(a, b) {
+    return parseFloat(b[3].substring(0, b.length - 1)) - parseFloat(a[3].substring(0, a.length - 1))
 }
 
 function sum(arr) {
@@ -288,8 +294,10 @@ function draw() {
             textSize(10)
             text("On images", 250, 270)
         }
+        cursor(WAIT)
     }
     else {
+        cursor(ARROW)
         if (!popupScreen) {
             background(0, 0, 0)
 
